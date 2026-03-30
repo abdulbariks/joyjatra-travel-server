@@ -6,6 +6,7 @@ import path from "path";
 import qs from "qs";
 import { auth } from "./lib/auth";
 import userRouter from "./app/modules/user/user.router";
+import { IndexRoutes } from "./app/routes";
 
 const app: Application = express();
 app.set("query parser", (str: string) => qs.parse(str));
@@ -41,8 +42,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ========================== Connect Routes ==========================
-// app.use("/api/v1", IndexRoutes);
-app.use("/api/v1/users", userRouter);
+app.use("/api/v1", IndexRoutes);
+// app.use("/api/v1/users", userRouter);
 
 // Basic route
 app.get("/", async (req: Request, res: Response) => {
