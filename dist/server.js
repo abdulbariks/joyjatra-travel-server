@@ -2549,13 +2549,130 @@ var require_lib = __commonJS({
   }
 });
 
+// node_modules/ms/index.js
+var require_ms = __commonJS({
+  "node_modules/ms/index.js"(exports, module) {
+    "use strict";
+    var s = 1e3;
+    var m = s * 60;
+    var h = m * 60;
+    var d = h * 24;
+    var w = d * 7;
+    var y = d * 365.25;
+    module.exports = function(val, options) {
+      options = options || {};
+      var type = typeof val;
+      if (type === "string" && val.length > 0) {
+        return parse(val);
+      } else if (type === "number" && isFinite(val)) {
+        return options.long ? fmtLong(val) : fmtShort(val);
+      }
+      throw new Error(
+        "val is not a non-empty string or a valid number. val=" + JSON.stringify(val)
+      );
+    };
+    function parse(str) {
+      str = String(str);
+      if (str.length > 100) {
+        return;
+      }
+      var match = /^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(
+        str
+      );
+      if (!match) {
+        return;
+      }
+      var n = parseFloat(match[1]);
+      var type = (match[2] || "ms").toLowerCase();
+      switch (type) {
+        case "years":
+        case "year":
+        case "yrs":
+        case "yr":
+        case "y":
+          return n * y;
+        case "weeks":
+        case "week":
+        case "w":
+          return n * w;
+        case "days":
+        case "day":
+        case "d":
+          return n * d;
+        case "hours":
+        case "hour":
+        case "hrs":
+        case "hr":
+        case "h":
+          return n * h;
+        case "minutes":
+        case "minute":
+        case "mins":
+        case "min":
+        case "m":
+          return n * m;
+        case "seconds":
+        case "second":
+        case "secs":
+        case "sec":
+        case "s":
+          return n * s;
+        case "milliseconds":
+        case "millisecond":
+        case "msecs":
+        case "msec":
+        case "ms":
+          return n;
+        default:
+          return void 0;
+      }
+    }
+    function fmtShort(ms2) {
+      var msAbs = Math.abs(ms2);
+      if (msAbs >= d) {
+        return Math.round(ms2 / d) + "d";
+      }
+      if (msAbs >= h) {
+        return Math.round(ms2 / h) + "h";
+      }
+      if (msAbs >= m) {
+        return Math.round(ms2 / m) + "m";
+      }
+      if (msAbs >= s) {
+        return Math.round(ms2 / s) + "s";
+      }
+      return ms2 + "ms";
+    }
+    function fmtLong(ms2) {
+      var msAbs = Math.abs(ms2);
+      if (msAbs >= d) {
+        return plural(ms2, msAbs, d, "day");
+      }
+      if (msAbs >= h) {
+        return plural(ms2, msAbs, h, "hour");
+      }
+      if (msAbs >= m) {
+        return plural(ms2, msAbs, m, "minute");
+      }
+      if (msAbs >= s) {
+        return plural(ms2, msAbs, s, "second");
+      }
+      return ms2 + " ms";
+    }
+    function plural(ms2, msAbs, n, name) {
+      var isPlural = msAbs >= n * 1.5;
+      return Math.round(ms2 / n) + " " + name + (isPlural ? "s" : "");
+    }
+  }
+});
+
 // src/app.ts
 var import_qs = __toESM(require_lib(), 1);
 import { toNodeHandler } from "better-auth/node";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-import path2 from "path";
+import path3 from "path";
 
 // src/lib/auth.ts
 import { betterAuth } from "better-auth";
@@ -2565,18 +2682,18 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-// src/generated/client.ts
+// src/generated/prisma/client.ts
 import * as path from "path";
 import { fileURLToPath } from "url";
 
-// src/generated/internal/class.ts
+// src/generated/prisma/internal/class.ts
 import * as runtime from "@prisma/client/runtime/client";
 var config = {
   "previewFeatures": [],
   "clientVersion": "7.4.2",
   "engineVersion": "94a226be1cf2967af2541cca5529f0f7ba866919",
   "activeProvider": "postgresql",
-  "inlineSchema": '// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = "prisma-client"\n  // output   = "../generated/prisma"\n  output   = "../src/generated"\n  // moduleFormat = "cjs"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nmodel User {\n  id            String    @id\n  name          String\n  email         String\n  emailVerified Boolean   @default(false)\n  image         String?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  sessions      Session[]\n  accounts      Account[]\n\n  @@unique([email])\n  @@map("user")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n',
+  "inlineSchema": 'model Admin {\n  id            String    @id @default(uuid(7))\n  name          String\n  email         String    @unique\n  profilePhoto  String?\n  contactNumber String?\n  isDeleted     Boolean   @default(false)\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  deletedAt     DateTime?\n\n  userId String @unique\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@index([email])\n  @@index([isDeleted])\n  @@map("admins")\n}\n\nmodel User {\n  id                 String     @id\n  name               String\n  email              String\n  emailVerified      Boolean    @default(false)\n  role               Role       @default(TOURIST)\n  status             UserStatus @default(ACTIVE)\n  needPasswordChange Boolean    @default(false)\n  isDeleted          Boolean    @default(false)\n  deletedAt          DateTime?\n  image              String?\n  createdAt          DateTime   @default(now())\n  updatedAt          DateTime   @updatedAt\n  sessions           Session[]\n  accounts           Account[]\n  tourist            Tourist?\n  moderator          Moderator?\n  admin              Admin?\n\n  @@unique([email])\n  @@map("user")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n\nenum Role {\n  SUPER_ADMIN\n  ADMIN\n  MODERATOR\n  TOURIST\n}\n\nenum UserStatus {\n  ACTIVE\n  BLOCKED\n  DELETED\n}\n\nenum Gender {\n  MALE\n  FEMALE\n  OTHER\n}\n\nenum PaymentStatus {\n  PAID\n  UNPAID\n}\n\nmodel Moderator {\n  id String @id @default(uuid(7))\n\n  name          String\n  email         String    @unique\n  profilePhoto  String?\n  contactNumber String?\n  address       String?\n  isDeleted     Boolean   @default(false)\n  deletedAt     DateTime?\n\n  registrationNumber  String @unique\n  experience          Int    @default(0)\n  gender              Gender @default(MALE)\n  appointmentFee      Float\n  qualification       String\n  currentWorkingPlace String\n  designation         String\n  averageRating       Float  @default(0.0)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  //relations\n\n  userId String @unique\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)\n\n  // reviews         Review[]\n\n  @@index([email], name: "idx_moderator_email")\n  @@index([isDeleted], name: "idx_moderator_isDeleted")\n  @@map("moderator")\n}\n\n// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../../src/generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nmodel Tourist {\n  id String @id @default(uuid(7))\n\n  name          String\n  email         String    @unique\n  profilePhoto  String?\n  contactNumber String?\n  address       String?\n  isDeleted     Boolean   @default(false)\n  deletedAt     DateTime?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n\n  //relations\n\n  userId String @unique\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)\n  //   appointments      Appointment[]\n  //   prescriptions     Prescription[]\n  //   medicalReports    MedicalReport[]\n  //   reviews           Review[]\n  //   patientHealthData PatientHealthData?\n\n  @@index([email], name: "idx_tourist_email")\n  @@index([isDeleted], name: "idx_tourist_isDeleted")\n  @@map("tourist")\n}\n',
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -2587,10 +2704,10 @@ var config = {
     "graph": ""
   }
 };
-config.runtimeDataModel = JSON.parse('{"models":{"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"emailVerified","kind":"scalar","type":"Boolean"},{"name":"image","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"sessions","kind":"object","type":"Session","relationName":"SessionToUser"},{"name":"accounts","kind":"object","type":"Account","relationName":"AccountToUser"}],"dbName":"user"},"Session":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"token","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"ipAddress","kind":"scalar","type":"String"},{"name":"userAgent","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"SessionToUser"}],"dbName":"session"},"Account":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"accountId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AccountToUser"},{"name":"accessToken","kind":"scalar","type":"String"},{"name":"refreshToken","kind":"scalar","type":"String"},{"name":"idToken","kind":"scalar","type":"String"},{"name":"accessTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"refreshTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"scope","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"account"},"Verification":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"identifier","kind":"scalar","type":"String"},{"name":"value","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"verification"}},"enums":{},"types":{}}');
+config.runtimeDataModel = JSON.parse('{"models":{"Admin":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"profilePhoto","kind":"scalar","type":"String"},{"name":"contactNumber","kind":"scalar","type":"String"},{"name":"isDeleted","kind":"scalar","type":"Boolean"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"deletedAt","kind":"scalar","type":"DateTime"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AdminToUser"}],"dbName":"admins"},"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"emailVerified","kind":"scalar","type":"Boolean"},{"name":"role","kind":"enum","type":"Role"},{"name":"status","kind":"enum","type":"UserStatus"},{"name":"needPasswordChange","kind":"scalar","type":"Boolean"},{"name":"isDeleted","kind":"scalar","type":"Boolean"},{"name":"deletedAt","kind":"scalar","type":"DateTime"},{"name":"image","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"sessions","kind":"object","type":"Session","relationName":"SessionToUser"},{"name":"accounts","kind":"object","type":"Account","relationName":"AccountToUser"},{"name":"tourist","kind":"object","type":"Tourist","relationName":"TouristToUser"},{"name":"moderator","kind":"object","type":"Moderator","relationName":"ModeratorToUser"},{"name":"admin","kind":"object","type":"Admin","relationName":"AdminToUser"}],"dbName":"user"},"Session":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"token","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"ipAddress","kind":"scalar","type":"String"},{"name":"userAgent","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"SessionToUser"}],"dbName":"session"},"Account":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"accountId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AccountToUser"},{"name":"accessToken","kind":"scalar","type":"String"},{"name":"refreshToken","kind":"scalar","type":"String"},{"name":"idToken","kind":"scalar","type":"String"},{"name":"accessTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"refreshTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"scope","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"account"},"Verification":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"identifier","kind":"scalar","type":"String"},{"name":"value","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"verification"},"Moderator":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"profilePhoto","kind":"scalar","type":"String"},{"name":"contactNumber","kind":"scalar","type":"String"},{"name":"address","kind":"scalar","type":"String"},{"name":"isDeleted","kind":"scalar","type":"Boolean"},{"name":"deletedAt","kind":"scalar","type":"DateTime"},{"name":"registrationNumber","kind":"scalar","type":"String"},{"name":"experience","kind":"scalar","type":"Int"},{"name":"gender","kind":"enum","type":"Gender"},{"name":"appointmentFee","kind":"scalar","type":"Float"},{"name":"qualification","kind":"scalar","type":"String"},{"name":"currentWorkingPlace","kind":"scalar","type":"String"},{"name":"designation","kind":"scalar","type":"String"},{"name":"averageRating","kind":"scalar","type":"Float"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"ModeratorToUser"}],"dbName":"moderator"},"Tourist":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"profilePhoto","kind":"scalar","type":"String"},{"name":"contactNumber","kind":"scalar","type":"String"},{"name":"address","kind":"scalar","type":"String"},{"name":"isDeleted","kind":"scalar","type":"Boolean"},{"name":"deletedAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"TouristToUser"}],"dbName":"tourist"}},"enums":{},"types":{}}');
 config.parameterizationSchema = {
-  strings: JSON.parse('["where","orderBy","cursor","user","sessions","accounts","_count","User.findUnique","User.findUniqueOrThrow","User.findFirst","User.findFirstOrThrow","User.findMany","data","User.createOne","User.createMany","User.createManyAndReturn","User.updateOne","User.updateMany","User.updateManyAndReturn","create","update","User.upsertOne","User.deleteOne","User.deleteMany","having","_min","_max","User.groupBy","User.aggregate","Session.findUnique","Session.findUniqueOrThrow","Session.findFirst","Session.findFirstOrThrow","Session.findMany","Session.createOne","Session.createMany","Session.createManyAndReturn","Session.updateOne","Session.updateMany","Session.updateManyAndReturn","Session.upsertOne","Session.deleteOne","Session.deleteMany","Session.groupBy","Session.aggregate","Account.findUnique","Account.findUniqueOrThrow","Account.findFirst","Account.findFirstOrThrow","Account.findMany","Account.createOne","Account.createMany","Account.createManyAndReturn","Account.updateOne","Account.updateMany","Account.updateManyAndReturn","Account.upsertOne","Account.deleteOne","Account.deleteMany","Account.groupBy","Account.aggregate","Verification.findUnique","Verification.findUniqueOrThrow","Verification.findFirst","Verification.findFirstOrThrow","Verification.findMany","Verification.createOne","Verification.createMany","Verification.createManyAndReturn","Verification.updateOne","Verification.updateMany","Verification.updateManyAndReturn","Verification.upsertOne","Verification.deleteOne","Verification.deleteMany","Verification.groupBy","Verification.aggregate","AND","OR","NOT","id","identifier","value","expiresAt","createdAt","updatedAt","equals","in","notIn","lt","lte","gt","gte","not","contains","startsWith","endsWith","accountId","providerId","userId","accessToken","refreshToken","idToken","accessTokenExpiresAt","refreshTokenExpiresAt","scope","password","token","ipAddress","userAgent","name","email","emailVerified","image","every","some","none","is","isNot","connectOrCreate","upsert","createMany","set","disconnect","delete","connect","updateMany","deleteMany"]'),
-  graph: "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_ACANUAEAAAABVEAAAAABVUAAAAABYQEAAAABYgEAAAABYwEAAAABZAEAAAABZQEAAAABZgEAAAABZ0AAAAABaEAAAAABaQEAAAABagEAAAABAQwAAEEAMAEMAABBADAOAwAAlQEAIFABAI0BACFUQACOAQAhVUAAjgEAIWEBAI0BACFiAQCNAQAhYwEAjQEAIWQBAJMBACFlAQCTAQAhZgEAkwEAIWdAAJQBACFoQACUAQAhaQEAkwEAIWoBAJMBACECAAAACQAgDAAARAAgDVABAI0BACFUQACOAQAhVUAAjgEAIWEBAI0BACFiAQCNAQAhYwEAjQEAIWQBAJMBACFlAQCTAQAhZgEAkwEAIWdAAJQBACFoQACUAQAhaQEAkwEAIWoBAJMBACECAAAABwAgDAAARgAgAgAAAAcAIAwAAEYAIAMAAAAJACATAAA_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AACIAQAgTQAAiQEAME4AAAMAEE8AAIkBADBQAQByACFTQABzACFUQABzACFVQABzACFjAQByACFrAQByACFsAQCDAQAhbQEAgwEAIQAAAAF6AQAAAAEBekAAAAABAAAAAAF6AQAAAAEBekAAAAABBRMAAMYBACAUAADJAQAgdwAAxwEAIHgAAMgBACB9AAABACADEwAAxgEAIHcAAMcBACB9AAABACAAAAAFEwAAwQEAIBQAAMQBACB3AADCAQAgeAAAwwEAIH0AAAEAIAMTAADBAQAgdwAAwgEAIH0AAAEAIAAAAAF6IAAAAAELEwAArgEAMBQAALMBADB3AACvAQAweAAAsAEAMHkAALEBACB6AACyAQAwewAAsgEAMHwAALIBADB9AACyAQAwfgAAtAEAMH8AALUBADALEwAAogEAMBQAAKcBADB3AACjAQAweAAApAEAMHkAAKUBACB6AACmAQAwewAApgEAMHwAAKYBADB9AACmAQAwfgAAqAEAMH8AAKkBADAMUAEAAAABVEAAAAABVUAAAAABYQEAAAABYgEAAAABZAEAAAABZQEAAAABZgEAAAABZ0AAAAABaEAAAAABaQEAAAABagEAAAABAgAAAAkAIBMAAK0BACADAAAACQAgEwAArQEAIBQAAKwBACABDAAAwAEAMBEDAACIAQAgTQAAhgEAME4AAAcAEE8AAIYBADBQAQAAAAFUQABzACFVQABzACFhAQByACFiAQByACFjAQByACFkAQCDAQAhZQEAgwEAIWYBAIMBACFnQACHAQAhaEAAhwEAIWkBAIMBACFqAQCDAQAhAgAAAAkAIAwAAKwBACACAAAAqgEAIAwAAKsBACAQTQAAqQEAME4AAKoBABBPAACpAQAwUAEAcgAhVEAAcwAhVUAAcwAhYQEAcgAhYgEAcgAhYwEAcgAhZAEAgwEAIWUBAIMBACFmAQCDAQAhZ0AAhwEAIWhAAIcBACFpAQCDAQAhagEAgwEAIRBNAACpAQAwTgAAqgEAEE8AAKkBADBQAQByACFUQABzACFVQABzACFhAQByACFiAQByACFjAQByACFkAQCDAQAhZQEAgwEAIWYBAIMBACFnQACHAQAhaEAAhwEAIWkBAIMBACFqAQCDAQAhDFABAI0BACFUQACOAQAhVUAAjgEAIWEBAI0BACFiAQCNAQAh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-Uhs_VRtAVhtBVxtCWRtDWwVEXBxFXhtGYAVHYR1IYhtJYxtKZAVLZx5MaCI"
+  strings: JSON.parse('["where","orderBy","cursor","user","sessions","accounts","tourist","moderator","admin","_count","Admin.findUnique","Admin.findUniqueOrThrow","Admin.findFirst","Admin.findFirstOrThrow","Admin.findMany","data","Admin.createOne","Admin.createMany","Admin.createManyAndReturn","Admin.updateOne","Admin.updateMany","Admin.updateManyAndReturn","create","update","Admin.upsertOne","Admin.deleteOne","Admin.deleteMany","having","_min","_max","Admin.groupBy","Admin.aggregate","User.findUnique","User.findUniqueOrThrow","User.findFirst","User.findFirstOrThrow","User.findMany","User.createOne","User.createMany","User.createManyAndReturn","User.updateOne","User.updateMany","User.updateManyAndReturn","User.upsertOne","User.deleteOne","User.deleteMany","User.groupBy","User.aggregate","Session.findUnique","Session.findUniqueOrThrow","Session.findFirst","Session.findFirstOrThrow","Session.findMany","Session.createOne","Session.createMany","Session.createManyAndReturn","Session.updateOne","Session.updateMany","Session.updateManyAndReturn","Session.upsertOne","Session.deleteOne","Session.deleteMany","Session.groupBy","Session.aggregate","Account.findUnique","Account.findUniqueOrThrow","Account.findFirst","Account.findFirstOrThrow","Account.findMany","Account.createOne","Account.createMany","Account.createManyAndReturn","Account.updateOne","Account.updateMany","Account.updateManyAndReturn","Account.upsertOne","Account.deleteOne","Account.deleteMany","Account.groupBy","Account.aggregate","Verification.findUnique","Verification.findUniqueOrThrow","Verification.findFirst","Verification.findFirstOrThrow","Verification.findMany","Verification.createOne","Verification.createMany","Verification.createManyAndReturn","Verification.updateOne","Verification.updateMany","Verification.updateManyAndReturn","Verification.upsertOne","Verification.deleteOne","Verification.deleteMany","Verification.groupBy","Verification.aggregate","Moderator.findUnique","Moderator.findUniqueOrThrow","Moderator.findFirst","Moderator.findFirstOrThrow","Moderator.findMany","Moderator.createOne","Moderator.createMany","Moderator.createManyAndReturn","Moderator.updateOne","Moderator.updateMany","Moderator.updateManyAndReturn","Moderator.upsertOne","Moderator.deleteOne","Moderator.deleteMany","_avg","_sum","Moderator.groupBy","Moderator.aggregate","Tourist.findUnique","Tourist.findUniqueOrThrow","Tourist.findFirst","Tourist.findFirstOrThrow","Tourist.findMany","Tourist.createOne","Tourist.createMany","Tourist.createManyAndReturn","Tourist.updateOne","Tourist.updateMany","Tourist.updateManyAndReturn","Tourist.upsertOne","Tourist.deleteOne","Tourist.deleteMany","Tourist.groupBy","Tourist.aggregate","AND","OR","NOT","id","name","email","profilePhoto","contactNumber","address","isDeleted","deletedAt","createdAt","updatedAt","userId","equals","in","notIn","lt","lte","gt","gte","not","contains","startsWith","endsWith","registrationNumber","experience","Gender","gender","appointmentFee","qualification","currentWorkingPlace","designation","averageRating","identifier","value","expiresAt","accountId","providerId","accessToken","refreshToken","idToken","accessTokenExpiresAt","refreshTokenExpiresAt","scope","password","token","ipAddress","userAgent","emailVerified","Role","role","UserStatus","status","needPasswordChange","image","every","some","none","is","isNot","connectOrCreate","upsert","disconnect","delete","connect","createMany","set","updateMany","deleteMany","increment","decrement","multiply","divide"]'),
+  graph: "8QI8cA4DAADPAQAgggEAAPEBADCDAQAADwAQhAEAAPEBADCFAQEAAAABhgEBAMoBACGHAQEAAAABiAEBAMsBACGJAQEAywEAIYsBIADMAQAhjAFAAM0BACGNAUAAzgEAIY4BQADOAQAhjwEBAAAAAQEAAAABACAMAwAAzwEAIIIBAADzAQAwgwEAAAMAEIQBAADzAQAwhQEBAMoBACGNAUAAzgEAIY4BQADOAQAhjwEBAMoBACGmAUAAzgEAIbABAQDKAQAhsQEBAMsBACGyAQEAywEAIQMDAAD_AQAgsQEAAPQBACCyAQAA9AEAIAwDAADPAQAgggEAAPMBADCDAQAAAwAQhAEAAPMBADCFAQEAAAABjQFAAM4BACGOAUAAzgEAIY8BAQDKAQAhpgFAAM4BACGwAQEAAAABsQEBAMsBACGyAQEAywEAIQMAAAADACABAAAEADACAAAFACARAwAAzwEAIIIBAADyAQAwgwEAAAcAEIQBAADyAQAwhQEBAMoBACGNAUAAzgEAIY4BQADOAQAhjwEBAMoBACGnAQEAygEAIagBAQDKAQAhqQEBAMsBACGqAQEAywEAIasBAQDLAQAhrAFAAM0BACGtAUAAzQEAIa4BAQDLAQAhrwEBAMsBACEIAwAA_wEAIKkBAAD0AQAgqgEAAPQBACCrAQAA9AEAIKwBAAD0AQAgrQEAAPQBACCuAQAA9AEAIK8BAAD0AQAgEQMAAM8BACCCAQAA8gEAMIMBAAAHABCEAQAA8gEAMIUBAQAAAAGNAUAAzgEAIY4BQADOAQAhjwEBAMoBACGnAQEAygEAIagBAQDKAQAhqQEBAMsBACGqAQEAywEAIasBAQDLAQAhrAFAAM0BACGtAUAAzQEAIa4BAQDLAQAhrwEBAMsBACEDAAAABwAgAQAACAAwAgAACQAgDwMAAM8BACCCAQAAyQEAMIMBAAALABCEAQAAyQEAMIUBAQDKAQAhhgEBAMoBACGHAQEAygEAIYgBAQDLAQAhiQEBAMsBACGKAQEAywEAIYsBIADMAQAhjAFAAM0BACGNAUAAzgEAIY4BQADOAQAhjwEBAMoBACEBAAAACwAgFwMAAM8BACCCAQAA2QEAMIMBAAANABCEAQAA2QEAMIUBAQDKAQAhhgEBAMoBACGHAQEAygEAIYgBAQDLAQAhiQEBAMsBACGKAQEAywEAIYsBIADMAQAhjAFAAM0BACGNAUAAzgEAIY4BQADOAQAhjwEBAMoBACGbAQEAygEAIZwBAgDaAQAhngEAANsBngEinwEIANwBACGgAQEAygEAIaEBAQDKAQAhogEBAMoBACGjAQgA3AEAIQEAAAANACAOAwAAzwEAIIIBAADxAQAwgwEAAA8AEIQBAADxAQAwhQEBAMoBACGGAQEAygEAIYcBAQDKAQAhiAEBAMsBACGJAQEAywEAIYsBIADMAQAhjAFAAM0BACGNAUAAzgEAIY4BQADOAQAhjwEBAMoBACEBAAAADwAgAQAAAAMAIAEAAAAHACABAAAAAQAgBAMAAP8BACCIAQAA9AEAIIkBAAD0AQAgjAEAAPQBACADAAAADwAgAQAAFAAwAgAAAQAgAwAAAA8AIAEAABQAMAIAAAEAIAMAAAAPACABAAAUADACAAABACALAwAA1gIAIIUBAQAAAAGGAQEAAAABhwEBAAAAAYgBAQAAAAGJAQEAAAABiwEgAAAAAYwBQAAAAAGNAUAAAAABjgFAAAAAAY8BAQAAAAEBDwAAGAAgCoUBAQAAAAGGAQEAAAABhwEBAAAAAYgBAQAAAAGJAQEAAAABiwEgAAAAAYwBQAAAAAGNAUAAAAABjgFAAAAAAY8BAQAAAAEBDwAAGgAwAQ8AABoAMAsDAADVAgAghQEBAPgBACGGAQEA-AEAIYcBAQD4AQAhiAEBAPkBACGJAQEA-QEAIYsBIAD6AQAhjAFAAPsBACGNAUAA_AEAIY4BQAD8AQAhjwEBAPgBACECAAAAAQAgDwAAHQAgCoUBAQD4AQAhhgEBAPgBACGHAQEA-AEAIYgBAQD5AQAhiQEBAPkBACGLASAA-gEAIYwBQAD7AQAhjQFAAPwBACGOAUAA_AEAIY8BAQD4AQAhAgAAAA8AIA8AAB8AIAIAAAAPACAPAAAfACADAAAAAQAgFgAAGAAgFwAAHQAgAQAAAAEAIAEAAAAPACAGCQAA0gIAIBwAANQCACAdAADTAgAgiAEAAPQBACCJAQAA9AEAIIwBAAD0AQAgDYIBAADwAQAwgwEAACYAEIQBAADwAQAwhQEBALgBACGGAQEAuAEAIYcBAQC4AQAhiAEBALkBACGJAQEAuQEAIYsBIAC6AQAhjAFAALsBACGNAUAAvAEAIY4BQAC8AQAhjwEBALgBACEDAAAADwAgAQAAJQAwGwAAJgAgAwAAAA8AIAEAABQAMAIAAAEAIBQEAADrAQAgBQAA7AEAIAYAAO0BACAHAADuAQAgCAAA7wEAIIIBAADoAQAwgwEAACwAEIQBAADoAQAwhQEBAAAAAYYBAQDKAQAhhwEBAAAAAYsBIADMAQAhjAFAAM0BACGNAUAAzgEAIY4BQADOAQAhswEgAMwBACG1AQAA6QG1ASK3AQAA6gG3ASK4ASAAzAEAIbkBAQDLAQAhAQAAACkAIAEAAAApACAUBAAA6wEAIAUAAOwBACAGAADtAQAgBwAA7gEAIAgAAO8BACCCAQAA6AEAMIMBAAAsABCEAQAA6AEAMIUBAQDKAQAhhgEBAMoBACGHAQEAygEAIYsBIADMAQAhjAFAAM0BACGNAUAAzgEAIY4BQADOAQAhswEgAMwBACG1AQAA6QG1ASK3AQAA6gG3ASK4ASAAzAEAIbkBAQDLAQAhBwQAAM0CACAFAADOAgAgBgAAzwIAIAcAANACACAIAADRAgAgjAEAAPQBACC5AQAA9AEAIAMAAAAsACABAAAtADACAAApACADAAAALAAgAQAALQAwAgAAKQAgAwAAACwAIAEAAC0AMAIAACkAIBEEAADIAgAgBQAAyQIAIAYAAMoCACAHAADLAgAgCAAAzAIAIIUBAQAAAAGGAQEAAAABhwEBAAAAAYsBIAAAAAGMAUAAAAABjQFAAAAAAY4BQAAAAAGzASAAAAABtQEAAAC1AQK3AQAAALcBArgBIAAAAAG5AQEAAAABAQ8AADEAIAyFAQEAAAABhgEBAAAAAYcBAQAAAAGLASAAAAABjAFAAAAAAY0BQAAAAAGOAUAAAAABswEgAAAAAbUBAAAAtQECtwEAAAC3AQK4ASAAAAABuQEBAAAAAQEPAAAzADABDwAAMwAwEQQAAJwCACAFAACdAgAgBgAAngIAIAcAAJ8CACAIAACgAgAghQEBAPgBACGGAQEA-AEAIYcBAQD4AQAhiwEgAPoBACGMAUAA-wEAIY0BQAD8AQAhjgFAAPwBACGzASAA-gEAIbUBAACaArUBIrcBAACbArcBIrgBIAD6AQAhuQEBAPkBACECAAAAKQAgDwAANgAgDIUBAQD4AQAhhgEBAPgBACGHAQEA-AEAIYsBIAD6AQAhjAFAAPsBACGNAUAA_AEAIY4BQAD8AQAhswEgAPoBACG1AQAAmgK1ASK3AQAAmwK3ASK4ASAA-gEAIbkBAQD5AQAhAgAAACwAIA8AADgAIAIAAAAsACAPAAA4ACADAAAAKQAgFgAAMQAgFwAANgAgAQAAACkAIAEAAAAsACAFCQAAlwIAIBwAAJkCACAdAACYAgAgjAEAAPQBACC5AQAA9AEAIA-CAQAA4QEAMIMBAAA_ABCEAQAA4QEAMIUBAQC4AQAhhgEBALgBACGHAQEAuAEAIYsBIAC6AQAhjAFAALsBACGNAUAAvAEAIY4BQAC8AQAhswEgALoBACG1AQAA4gG1ASK3AQAA4wG3ASK4ASAAugEAIbkBAQC5AQAhAwAAACwAIAEAAD4AMBsAAD8AIAMAAAAsACABAAAtADACAAApACABAAAABQAgAQAAAAUAIAMAAAADACABAAAEADACAAAFACADAAAAAwAgAQAABAAwAgAABQAgAwAAAAMAIAEAAAQAMAIAAAUAIAkDAACWAgAghQEBAAAAAY0BQAAAAAGOAUAAAAABjwEBAAAAAaYBQAAAAAGwAQEAAAABsQEBAAAAAbIBAQAAAAEBDwAARwAgCIUBAQAAAAGNAUAAAAABjgFAAAAAAY8BAQAAAAGmAUAAAAABsAEBAAAAAbEBAQAAAAGyAQEAAAABAQ8AAEkAMAEPAABJADAJAwAAlQIAIIUBAQD4AQAhjQFAAPwBACGOAUAA_AEAIY8BAQD4AQAhpgFAAPwBACGwAQEA-AEAIbEBAQD5AQAhsgEBAPkBACECAAAABQAgDwAATAAgCIUBAQD4AQAhjQFAAPwBACGOAUAA_AEAIY8BAQD4AQAhpgFAAPwBACGwAQEA-AEAIbEBAQD5AQAhsgEBAPkBACECAAAAAwAgDwAATgAgAgAAAAMAIA8AAE4AIAMAAAAFACAWAABHACAXAABMACABAAAABQAgAQAAAAMAIAUJAACSAgAgHAAAlAIAIB0AAJMCACCxAQAA9AEAILIBAAD0AQAgC4IBAADgAQAwgwEAAFUAEIQBAADgAQAwhQEBALgBACGNAUAAvAEAIY4BQAC8AQAhjwEBALgBACGmAUAAvAEAIbABAQC4AQAhsQEBALkBACGyAQEAuQEAIQMAAAADACABAABUADAbAABVACADAAAAAwAgAQAABAAwAgAABQAgAQAAAAkAIAEAAAAJACADAAAABwAgAQAACAAwAgAACQAgAwAAAAcAIAEAAAgAMAIAAAkAIAMAAAAHACABAAAIADACAAAJACAOAwAAkQIAIIUBAQAAAAGNAUAAAAABjgFAAAAAAY8BAQAAAAGnAQEAAAABqAEBAAAAAakBAQAAAAGqAQEAAAABqwEBAAAAAawBQAAAAAGtAUAAAAABrgEBAAAAAa8BAQAAAAEBDwAAXQAgDYUBAQAAAAGNAUAAAAABjgFAAAAAAY8BAQAAAAGnAQEAAAABqAEBAAAAAakBAQAAAAGqAQEAAAABqwEBAAAAAawBQAAAAAGtAUAAAAABrgEBAAAAAa8BAQAAAAEBDwAAXwAwAQ8AAF8AMA4DAACQAgAghQEBAPgBACGNAUAA_AEAIY4BQAD8AQAhjwEBAPgBACGnAQEA-AEAIagBAQD4AQAhqQEBAPkBACGqAQEA-QEAIasBAQD5AQAhrAFAAPsBACGtAUAA-wEAIa4BAQD5AQAhrwEBAPkBACECAAAACQAgDwAAYgAgDYUBAQD4AQAhjQFAAPwBACGOAUAA_AEAIY8BAQD4AQAhpwEBAPgBACGoAQEA-AEAIakBAQD5AQAhqgEBAPkBACGrAQEA-QEAIawBQAD7AQAhrQFAAPsBACGuAQEA-QEAIa8BAQD5AQAhAgAAAAcAIA8AAGQAIAIAAAAHACAPAABkACADAAAACQAgFgAAXQAgFwAAYgAgAQAAAAkAIAEAAAAHACAKCQAAjQIAIBwAAI8CACAdAACOAgAgqQEAAPQBACCqAQAA9AEAIKsBAAD0AQAgrAEAAPQBACCtAQAA9AEAIK4BAAD0AQAgrwEAAPQBACAQggEAAN8BADCDAQAAawAQhAEAAN8BADCFAQEAuAEAIY0BQAC8AQAhjgFAALwBACGPAQEAuAEAIacBAQC4AQAhqAEBALgBACGpAQEAuQEAIaoBAQC5AQAhqwEBALkBACGsAUAAuwEAIa0BQAC7AQAhrgEBALkBACGvAQEAuQEAIQMAAAAHACABAABqADAbAABrACADAAAABwAgAQAACAAwAgAACQAgCYIBAADeAQAwgwEAAHEAEIQBAADeAQAwhQEBAAAAAY0BQADOAQAhjgFAAM4BACGkAQEAygEAIaUBAQDKAQAhpgFAAM4BACEBAAAAbgAgAQAAAG4AIAmCAQAA3gEAMIMBAABxABCEAQAA3gEAMIUBAQDKAQAhjQFAAM4BACGOAUAAzgEAIaQBAQDKAQAhpQEBAMoBACGmAUAAzgEAIQADAAAAcQAgAQAAcgAwAgAAbgAgAwAAAHEAIAEAAHIAMAIAAG4AIAMAAABxACABAAByADACAABuACAGhQEBAAAAAY0BQAAAAAGOAUAAAAABpAEBAAAAAaUBAQAAAAGmAUAAAAABAQ8AAHYAIAaFAQEAAAABjQFAAAAAAY4BQAAAAAGkAQEAAAABpQEBAAAAAaYBQAAAAAEBDwAAeAAwAQ8AAHgAMAaFAQEA-AEAIY0BQAD8AQAhjgFAAPwBACGkAQEA-AEAIaUBAQD4AQAhpgFAAPwBACECAAAAbgAgDwAAewAgBoUBAQD4AQAhjQFAAPwBACGOAUAA_AEAIaQBAQD4AQAhpQEBAPgBACGmAUAA_AEAIQIAAABxACAPAAB9ACACAAAAcQAgDwAAfQAgAwAAAG4AIBYAAHYAIBcAAHsAIAEAAABuACABAAAAcQAgAwkAAIoCACAcAACMAgAgHQAAiwIAIAmCAQAA3QEAMIMBAACEAQAQhAEAAN0BADCFAQEAuAEAIY0BQAC8AQAhjgFAALwBACGkAQEAuAEAIaUBAQC4AQAhpgFAALwBACEDAAAAcQAgAQAAgwEAMBsAAIQBACADAAAAcQAgAQAAcgAwAgAAbgAgFwMAAM8BACCCAQAA2QEAMIMBAAANABCEAQAA2QEAMIUBAQAAAAGGAQEAygEAIYcBAQAAAAGIAQEAywEAIYkBAQDLAQAhigEBAMsBACGLASAAzAEAIYwBQADNAQAhjQFAAM4BACGOAUAAzgEAIY8BAQAAAAGbAQEAAAABnAECANoBACGeAQAA2wGeASKfAQgA3AEAIaABAQDKAQAhoQEBAMoBACGiAQEAygEAIaMBCADcAQAhAQAAAIcBACABAAAAhwEAIAUDAAD_AQAgiAEAAPQBACCJAQAA9AEAIIoBAAD0AQAgjAEAAPQBACADAAAADQAgAQAAigEAMAIAAIcBACADAAAADQAgAQAAigEAMAIAAIcBACADAAAADQAgAQAAigEAMAIAAIcBACAUAwAAiQIAIIUBAQAAAAGGAQEAAAABhwEBAAAAAYgBAQAAAAGJAQEAAAABigEBAAAAAYsBIAAAAAGMAUAAAAABjQFAAAAAAY4BQAAAAAGPAQEAAAABmwEBAAAAAZwBAgAAAAGeAQAAAJ4BAp8BCAAAAAGgAQEAAAABoQEBAAAAAaIBAQAAAAGjAQgAAAABAQ8AAI4BACAThQEBAAAAAYYBAQAAAAGHAQEAAAABiAEBAAAAAYkBAQAAAAGKAQEAAAABiwEgAAAAAYwBQAAAAAGNAUAAAAABjgFAAAAAAY8BAQAAAAGbAQEAAAABnAECAAAAAZ4BAAAAngECnwEIAAAAAaABAQAAAAGhAQEAAAABogEBAAAAAaMBCAAAAAEBDwAAkAEAMAEPAACQAQAwFAMAAIgCACCFAQEA-AEAIYYBAQD4AQAhhwEBAPgBACGIAQEA-QEAIYkBAQD5AQAhigEBAPkBACGLASAA-gEAIYwBQAD7AQAhjQFAAPwBACGOAUAA_AEAIY8BAQD4AQAhmwEBAPgBACGcAQIAhQIAIZ4BAACGAp4BIp8BCACHAgAhoAEBAPgBACGhAQEA-AEAIaIBAQD4AQAhowEIAIcCACECAAAAhwEAIA8AAJMBACAThQEBAPgBACGGAQEA-AEAIYcBAQD4AQAhiAEBAPkBACGJAQEA-QEAIYoBAQD5AQAhiwEgAPoBACGMAUAA-wEAIY0BQAD8AQAhjgFAAPwBACGPAQEA-AEAIZsBAQD4AQAhnAECAIUCACGeAQAAhgKeASKfAQgAhwIAIaABAQD4AQAhoQEBAPgBACGiAQEA-AEAIaMBCACHAgAhAgAAAA0AIA8AAJUBACACAAAADQAgDwAAlQEAIAMAAACHAQAgFgAAjgEAIBcAAJMBACABAAAAhwEAIAEAAAANACAJCQAAgAIAIBwAAIMCACAdAACCAgAgbgAAgQIAIG8AAIQCACCIAQAA9AEAIIkBAAD0AQAgigEAAPQBACCMAQAA9AEAIBaCAQAA0AEAMIMBAACcAQAQhAEAANABADCFAQEAuAEAIYYBAQC4AQAhhwEBALgBACGIAQEAuQEAIYkBAQC5AQAhigEBALkBACGLASAAugEAIYwBQAC7AQAhjQFAALwBACGOAUAAvAEAIY8BAQC4AQAhmwEBALgBACGcAQIA0QEAIZ4BAADSAZ4BIp8BCADTAQAhoAEBALgBACGhAQEAuAEAIaIBAQC4AQAhowEIANMBACEDAAAADQAgAQAAmwEAMBsAAJwBACADAAAADQAgAQAAigEAMAIAAIcBACAPAwAAzwEAIIIBAADJAQAwgwEAAAsAEIQBAADJAQAwhQEBAAAAAYYBAQDKAQAhhwEBAAAAAYgBAQDLAQAhiQEBAMsBACGKAQEAywEAIYsBIADMAQAhjAFAAM0BACGNAUAAzgEAIY4BQADOAQAhjwEBAAAAAQEAAACfAQAgAQAAAJ8BACAFAwAA_wEAIIgBAAD0AQAgiQEAAPQBACCKAQAA9AEAIIwBAAD0AQAgAwAAAAsAIAEAAKIBADACAACfAQAgAwAAAAsAIAEAAKIBADACAACfAQAgAwAAAAsAIAEAAKIBADACAACfAQAgDAMAAP4BACCFAQEAAAABhgEBAAAAAYcBAQAAAAGIAQEAAAABiQEBAAAAAYoBAQAAAAGLASAAAAABjAFAAAAAAY0BQAAAAAGOAUAAAAABjwEBAAAAAQEPAACmAQAgC4UBAQAAAAGGAQEAAAABhwEBAAAAAYgBAQAAAAGJAQEAAAABigEBAAAAAYsBIAAAAAGMAUAAAAABjQFAAAAAAY4BQAAAAAGPAQEAAAABAQ8AAKgBADABDwAAqAEAMAwDAAD9AQAghQEBAPgBACGGAQEA-AEAIYcBAQD4AQAhiAEBAPkBACGJAQEA-QEAIYoBAQD5AQAhiwEgAPoBACGMAUAA-wEAIY0BQAD8AQAhjgFAAPwBACGPAQEA-AEAIQIAAACfAQAgDwAAqwEAIAuFAQEA-AEAIYYBAQD4AQAhhwEBAPgBACGIAQEA-QEAIYkBAQD5AQAhigEBAPkBACGLASAA-gEAIYwBQAD7AQAhjQFAAPwBACGOAUAA_AEAIY8BAQD4AQAhAgAAAAsAIA8AAK0BACACAAAACwAgDwAArQEAIAMAAACfAQAgFgAApgEAIBcAAKsBACABAAAAnwEAIAEAAAALACAHCQAA9QEAIBwAAPcBACAdAAD2AQAgiAEAAPQBACCJAQAA9AEAIIoBAAD0AQAgjAEAAPQBACAOggEAALcBADCDAQAAtAEAEIQBAAC3AQAwhQEBALgBACGGAQEAuAEAIYcBAQC4AQAhiAEBALkBACGJAQEAuQEAIYoBAQC5AQAhiwEgALoBACGMAUAAuwEAIY0BQAC8AQAhjgFAALwBACGPAQEAuAEAIQMAAAALACABAACzAQAwGwAAtAEAIAMAAAALACABAACiAQAwAgAAnwEAIA6CAQAAtwEAMIMBAAC0AQAQhAEAALcBADCFAQEAuAEAIYYBAQC4AQAhhwEBALgBACGIAQEAuQEAIYkBAQC5AQAhigEBALkBACGLASAAugEAIYwBQAC7AQAhjQFAALwBACGOAUAAvAEAIY8BAQC4AQAhDgkAAL4BACAcAADIAQAgHQAAyAEAIJABAQAAAAGRAQEAAAAEkgEBAAAABJMBAQAAAAGUAQEAAAABlQEBAAAAAZYBAQAAAAGXAQEAxwEAIZgBAQAAAAGZAQEAAAABmgEBAAAAAQ4JAADBAQAgHAAAxgEAIB0AAMYBACCQAQEAAAABkQEBAAAABZIBAQAAAAWTAQEAAAABlAEBAAAAAZUBAQAAAAGWAQEAAAABlwEBAMUBACGYAQEAAAABmQEBAAAAAZoBAQAAAAEFCQAAvgEAIBwAAMQBACAdAADEAQAgkAEgAAAAAZcBIADDAQAhCwkAAMEBACAcAADCAQAgHQAAwgEAIJABQAAAAAGRAUAAAAAFkgFAAAAABZMBQAAAAAGUAUAAAAABlQFAAAAAAZYBQAAAAAGXAUAAwAEAIQsJAAC-AQAgHAAAvwEAIB0AAL8BACCQAUAAAAABkQFAAAAABJIBQAAAAASTAUAAAAABlAFAAAAAAZUBQAAAAAGWAUAAAAABlwFAAL0BACELCQAAvgEAIBwAAL8BACAdAAC_AQAgkAFAAAAAAZEBQAAAAASSAUAAAAAEkwFAAAAAAZQBQAAAAAGVAUAAAAABlgFAAAAAAZcBQAC9AQAhCJABAgAAAAGRAQIAAAAEkgECAAAABJMBAgAAAAGUAQIAAAABlQECAAAAAZYBAgAAAAGXAQIAvgEAIQiQAUAAAAABkQFAAAAABJIBQAAAAASTAUAAAAABlAFAAAAAAZUBQAAAAAGWAUAAAAABlwFAAL8BACELCQAAwQEAIBwAAMIBACAdAADCAQAgkAFAAAAAAZEBQAAAAAWSAUAAAAAFkwFAAAAAAZQBQAAAAAGVAUAAAAABlgFAAAAAAZcBQADAAQAhCJABAgAAAAGRAQIAAAAFkgECAAAABZMBAgAAAAGUAQIAAAABlQECAAAAAZYBAgAAAAGXAQIAwQEAIQiQAUAAAAABkQFAAAAABZIBQAAAAAWTAUAAAAABlAFAAAAAAZUBQAAAAAGWAUAAAAABlwFAAMIBACEFCQAAvgEAIBwAAMQBACAdAADEAQAgkAEgAAAAAZcBIADDAQAhApABIAAAAAGXASAAxAEAIQ4JAADBAQAgHAAAxgEAIB0AAMYBACCQAQEAAAABkQEBAAAABZIBAQAAAAWTAQEAAAABlAEBAAAAAZUBAQAAAAGWAQEAAAABlwEBAMUBACGYAQEAAAABmQEBAAAAAZoBAQAAAAELkAEBAAAAAZEBAQAAAAWSAQEAAAAFkwEBAAAAAZQBAQAAAAGVAQEAAAABlgEBAAAAAZcBAQDGAQAhmAEBAAAAAZkBAQAAAAGaAQEAAAABDgkAAL4BACAcAADIAQAgHQAAyAEAIJABAQAAAAGRAQEAAAAEkgEBAAAABJMBAQAAAAGUAQEAAAABlQEBAAAAAZYBAQAAAAGXAQEAxwEAIZgBAQAAAAGZAQEAAAABmgEBAAAAAQuQAQEAAAABkQEBAAAABJIBAQAAAASTAQEAAAABlAEBAAAAAZUBAQAAAAGWAQEAAAABlwEBAMgBACGYAQEAAAABmQEBAAAAAZoBAQAAAAEPAwAAzwEAIIIBAADJAQAwgwEAAAsAEIQBAADJAQAwhQEBAMoBACGGAQEAygEAIYcBAQDKAQAhiAEBAMsBACGJAQEAywEAIYoBAQDLAQAhiwEgAMwBACGMAUAAzQEAIY0BQADOAQAhjgFAAM4BACGPAQEAygEAIQuQAQEAAAABkQEBAAAABJIBAQAAAASTAQEAAAABlAEBAAAAAZUBAQAAAAGWAQEAAAABlwEBAMgBACGYAQEAAAABmQEBAAAAAZoBAQAAAAELkAEBAAAAAZEBAQAAAAWSAQEAAAAFkwEBAAAAAZQBAQAAAAGVAQEAAAABlgEBAAAAAZcBAQDGAQAhmAEBAAAAAZkBAQAAAAGaAQEAAAABApABIAAAAAGXASAAxAEAIQiQAUAAAAABkQFAAAAABZIBQAAAAAWTAUAAAAABlAFAAAAAAZUBQAAAAAGWAUAAAAABlwFAAMIBACEIkAFAAAAAAZEBQAAAAASSAUAAAAAEkwFAAAAAAZQBQAAAAAGVAUAAAAABlgFAAAAAAZcBQAC_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-CAQAA4QEAMIMBAAA_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_AQAA7gIAIMABAADvAgAgwwEAACkAIAMWAADtAgAgvwEAAO4CACDDAQAAKQAgBwQAAM0CACAFAADOAgAgBgAAzwIAIAcAANACACAIAADRAgAgjAEAAPQBACC5AQAA9AEAIAAAAAAABcUBAgAAAAHIAQIAAAAByQECAAAAAcoBAgAAAAHLAQIAAAABAcUBAAAAngECBcUBCAAAAAHIAQgAAAAByQEIAAAAAcoBCAAAAAHLAQgAAAABBRYAAOgCACAXAADrAgAgvwEAAOkCACDAAQAA6gIAIMMBAAApACADFgAA6AIAIL8BAADpAgAgwwEAACkAIAAAAAAAAAUWAADjAgAgFwAA5gIAIL8BAADkAgAgwAEAAOUCACDDAQAAKQAgAxYAAOMCACC_AQAA5AIAIMMBAAApACAAAAAFFgAA3gIAIBcAAOECACC_AQAA3wIAIMABAADgAgAgwwEAACkAIAMWAADeAgAgvwEAAN8CACDDAQAAKQAgAAAAAcUBAAAAtQECAcUBAAAAtwECCxYAALwCADAXAADBAgAwvwEAAL0CADDAAQAAvgIAMMEBAADAAgAwwgEAAMACADDDAQAAwAIAMMQBAAC_AgAgxQEAAMACADDGAQAAwgIAMMcBAADDAgAwCxYAALACADAXAAC1AgAwvwEAALECADDAAQAAsgIAMMEBAAC0AgAwwgEAALQCADDDAQAAtAIAMMQBAACzAgAgxQEAALQCADDGAQAAtgIAMMcBAAC3AgAwBxYAAKsCACAXAACuAgAgvwEAAKwCACDAAQAArQIAIMEBAAALACDCAQAACwAgwwEAAJ8BACAHFgAApgIAIBcAAKkCACC_AQAApwIAIMABAACoAgAgwQEAAA0AIMIBAAANACDDAQAAhwEAIAcWAAChAgAgFwAApAIAIL8BAACiAgAgwAEAAKMCACDBAQAADwAgwgEAAA8AIMMBAAABACAJhQEBAAAAAYYBAQAAAAGHAQEAAAABiAEBAAAAAYkBAQAAAAGLASAAAAABjAFAAAAAAY0BQAAAAAGOAUAAAAABAgAAAAEAIBYAAKECACADAAAADwAgFgAAoQIAIBcAAKUCACALAAAADwAgDwAApQIAIIUBAQD4AQAhhgEBAPgBACGHAQEA-AEAIYgBAQD5AQAhiQEBAPkBACGLASAA-gEAIYwBQAD7AQAhjQFAAPwBACGOAUAA_AEAIQmFAQEA-AEAIYYBAQD4AQAhhwEBAPgBACGIAQEA-QEAIYkBAQD5AQAhiwEgAPoBACGMAUAA-wEAIY0BQAD8AQAhjgFAAPwBACEShQEBAAAAAYYBAQAAAAGHAQEAAAABiAEBAAAAAYkBAQAAAAGKAQEAAAABiwEgAAAAAYwBQAAAAAGNAUAAAAABjgFAAAAAAZsBAQAAAAGcAQIAAAABngEAAACeAQKfAQgAAAABoAEBAAAAAaEBAQAAAAGiAQEAAAABowEIAAAAAQIAAACHAQAgFgAApgIAIAMAAAANACAWAACmAgAgFwAAqgIAIBQAAAANACAPAACqAgAghQEBAPgBACGGAQEA-AEAIYcBAQD4AQAhiAEBAPkBACGJAQEA-QEAIYoBAQD5AQAhiwEgAPoBACGMAUAA-wEAIY0BQAD8AQAhjgFAAPwBACGbAQEA-AEAIZwBAgCFAgAhngEAAIYCngEinwEIAIcCACGgAQEA-AEAIaEBAQD4AQAhogEBAPgBACGjAQgAhwIAIRKFAQEA-AEAIYYBAQD4AQAhhwEBAPgBACGIAQEA-QEAIYkBAQD5AQAhigEBAPkBACGLASAA-gEAIYwBQAD7AQAhjQFAAPwBACGOAUAA_AEAIZsBAQD4AQAhnAECAIUCACGeAQAAhgKeASKfAQgAhwIAIaABAQD4AQAhoQEBAPgBACGiAQEA-AEAIaMBCACHAgAhCoUBAQAAAAGGAQEAAAABhwEBAAAAAYgBAQAAAAGJAQEAAAABigEBAAAAAYsBIAAAAAGMAUAAAAABjQFAAAAAAY4BQAAAAAECAAAAnwEAIBYAAKsCACADAAAACwAgFgAAqwIAIBcAAK8CACAMAAAACwAgDwAArwIAIIUBAQD4AQAhhgEBAPgBACGHAQEA-AEAIYgBAQD5AQAhiQEBAPkBACGKAQEA-QEAIYsBIAD6AQAhjAFAAPsBACGNAUAA_AEAIY4BQAD8AQAhCoUBAQD4AQAhhgEBAPgBACGHAQEA-AEAIYgBAQD5AQAhiQEBAPkBACGKAQEA-QEAIYsBIAD6AQAhjAFAAPsBACGNAUAA_AEAIY4BQAD8AQAhDIUBAQAAAAGNAUAAAAABjgFAAAAAAacBAQAAAAGoAQEAAAABqQEBAAAAAaoBAQAAAAGrAQEAAAABrAFAAAAAAa0BQAAAAAGuAQEAAAABrwEBAAAAAQIAAAAJACAWAAC7AgAgAwAAAAkAIBYAALsCACAXAAC6AgAgAQ8AAN0CADARAwAAzwEAIIIBAADyAQAwgwEAAAcAEIQBAADyAQAwhQEBAAAAAY0BQADOAQAhjgFAAM4BACGPAQEAygEAIacBAQDKAQAhqAEBAMoBACGpAQEAywEAIaoBAQDLAQAhqwEBAMsBACGsAUAAzQEAIa0BQADNAQAhrgEBAMsBACGvAQEAywEAIQIAAAAJACAPAAC6AgAgAgAAALgCACAPAAC5AgAgEIIBAAC3AgAwgwEAALgCABCEAQAAtwIAMIUBAQDKAQAhjQFAAM4BACGOAUAAzgEAIY8BAQDKAQAhpwEBAMoBACGoAQEAygEAIakBAQDLAQAhqgEBAMsBACGrAQEAywEAIawBQADNAQAhrQFAAM0BACGuAQEAywEAIa8BAQDLAQAhEIIBAAC3AgAwgwEAALgCABCEAQAAtwIAMIUBAQDKAQAhjQFAAM4BACGOAUAAzgEAIY8BAQDKAQAhpwEBAMoBACGoAQEAygEAIakBAQDLAQAhqgEBAMsBACGrAQEAywEAIawBQADNAQAhrQFAAM0BACGuAQEAywEAIa8BAQDLAQAhDIUBAQD4AQAhjQFAAPwBACGOAUAA_AEAIacBAQD4AQAhqAEBAPgBACGpAQEA-QEAIaoBAQD5AQAhqwEBAPkBACGsAUAA-wEAIa0BQAD7AQAhrgEBAPkBACGvAQEA-QEAIQyFAQEA-AEAIY0BQAD8AQAhjgFAAPwBACGnAQEA-AEAIagBAQD4AQAhqQEBAPkBACGqAQEA-QEAIasBAQD5AQAhrAFAAPsBACGtAUAA-wEAIa4BAQD5AQAhrwEBAPkBACEMhQEBAAAAAY0BQAAAAAGOAUAAAAABpwEBAAAAAagBAQAAAAGpAQEAAAABqgEBAAAAAasBAQAAAAGsAUAAAAABrQFAAAAAAa4BAQAAAAGvAQEAAAABB4UBAQAAAAGNAUAAAAABjgFAAAAAAaYBQAAAAAGwAQEAAAABsQEBAAAAAbIBAQAAAAECAAAABQAgFgAAxwIAIAMAAAAFACAWAADHAgAgFwAAxgIAIAEPAADcAgAwDAMAAM8BACCCAQAA8wEAMIMBAAADABCEAQAA8wEAMIUBAQAAAAGNAUAAzgEAIY4BQADOAQAhjwEBAMoBACGmAUAAzgEAIbABAQAAAAGxAQEAywEAIbIBAQDLAQAhAgAAAAUAIA8AAMYCACACAAAAxAIAIA8AAMUCACALggEAAMMCADCDAQAAxAIAEIQBAADDAgAwhQEBAMoBACGNAUAAzgEAIY4BQADOAQAhjwEBAMoBACGmAUAAzgEAIbABAQDKAQAhsQEBAMsBACGyAQEAywEAIQuCAQAAwwIAMIMBAADEAgAQhAEAAMMCADCFAQEAygEAIY0BQADOAQAhjgFAAM4BACGPAQEAygEAIaYBQADOAQAhsAEBAMoBACGxAQEAywEAIbIBAQDLAQAhB4UBAQD4AQAhjQFAAPwBACGOAUAA_AEAIaYBQAD8AQAhsAEBAPgBACGxAQEA-QEAIbIBAQD5AQAhB4UBAQD4AQAhjQFAAPwBACGOAUAA_AEAIaYBQAD8AQAhsAEBAPgBACGxAQEA-QEAIbIBAQD5AQAhB4UBAQAAAAGNAUAAAAABjgFAAAAAAaYBQAAAAAGwAQEAAAABsQEBAAAAAbIBAQAAAAEEFgAAvAIAML8BAAC9AgAwwwEAAMACADDEAQAAvwIAIAQWAACwAgAwvwEAALECADDDAQAAtAIAMMQBAACzAgAgAxYAAKsCACC_AQAArAIAIMMBAACfAQAgAxYAAKYCACC_AQAApwIAIMMBAACHAQAgAxYAAKECACC_AQAAogIAIMMBAAABACAAAAUDAAD_AQAgiAEAAPQBACCJAQAA9AEAIIoBAAD0AQAgjAEAAPQBACAFAwAA_wEAIIgBAAD0AQAgiQEAAPQBACCKAQAA9AEAIIwBAAD0AQAgBAMAAP8BACCIAQAA9AEAIIkBAAD0AQAgjAEAAPQBACAAAAAFFgAA1wIAIBcAANoCACC_AQAA2AIAIMABAADZAgAgwwEAACkAIAMWAADXAgAgvwEAANgCACDDAQAAKQAgEAQAAMgCACAFAADJAgAgBgAAygIAIAcAAMsCACCFAQEAAAABhgEBAAAAAYcBAQAAAAGLASAAAAABjAFAAAAAAY0BQAAAAAGOAUAAAAABswEgAAAAAbUBAAAAtQECtwEAAAC3AQK4ASAAAAABuQEBAAAAAQIAAAApACAWAADXAgAgAwAAACwAIBYAANcCACAXAADbAgAgEgAAACwAIAQAAJwCACAFAACdAgAgBgAAngIAIAcAAJ8CACAPAADbAgAghQEBAPgBACGGAQEA-AEAIYcBAQD4AQAhiwEgAPoBACGMAUAA-wEAIY0BQAD8AQAhjgFAAPwBACGzASAA-gEAIbUBAACaArUBIrcBAACbArcBIrgBIAD6AQAhuQEBAPkBACEQBAAAnAIAIAUAAJ0CACAGAACeAgAgBwAAnwIAIIUBAQD4AQAhhgEBAPgBACGHAQEA-AEAIYsBIAD6AQAhjAFAAPsBACGNAUAA_AEAIY4BQAD8AQAhswEgAPoBACG1AQAAmgK1ASK3AQAAmwK3ASK4ASAA-gEAIbkBAQD5AQAhB4UBAQAAAAGNAUAAAAABjgFAAAAAAaYBQAAAAAGwAQEAAAABsQEBAAAAAbIBAQAAAAEMhQEBAAAAAY0BQAAAAAGOAUAAAAABpwEBAAAAAagBAQAAAAGpAQEAAAABqgEBAAAAAasBAQAAAAGsAUAAAAABrQFAAAAAAa4BAQAAAAGvAQEAAAABEAUAAMkCACAGAADKAgAgBwAAywIAIAgAAMwCACCFAQEAAAABhgEBAAAAAYcBAQAAAAGLASAAAAABjAFAAAAAAY0BQAAAAAGOAUAAAAABswEgAAAAAbUBAAAAtQECtwEAAAC3AQK4ASAAAAABuQEBAAAAAQIAAAApACAWAADeAgAgAwAAACwAIBYAAN4CACAXAADiAgAgEgAAACwAIAUAAJ0CACAGAACeAgAgBwAAnwIAIAgAAKACACAPAADiAgAghQEBAPgBACGGAQEA-AEAIYcBAQD4AQAhiwEgAPoBACGMAUAA-wEAIY0BQAD8AQAhjgFAAPwBACGzASAA-gEAIbUBAACaArUBIrcBAACbArcBIrgBIAD6AQAhuQEBAPkBACEQBQAAnQIAIAYAAJ4CACAHAACfAgAgCAAAoAIAIIUBAQD4AQAhhgEBAPgBACGHAQEA-AEAIYsBIAD6AQAhjAFAAPsBACGNAUAA_AEAIY4BQAD8AQAhswEgAPoBACG1AQAAmgK1ASK3AQAAmwK3ASK4ASAA-gEAIbkBAQD5AQAhEAQAAMgCACAGAADKAgAgBwAAywIAIAgAAMwCACCFAQEAAAABhgEBAAAAAYcBAQAAAAGLASAAAAABjAFAAAAAAY0BQAAAAAGOAUAAAAABswEgAAAAAbUBAAAAtQECtwEAAAC3AQK4ASAAAAABuQEBAAAAAQIAAAApACAWAADjAgAgAwAAACwAIBYAAOMCACAXAADnAgAgEgAAACwAIAQAAJwCACAGAACeAgAgBwAAnwIAIAgAAKACACAPAADnAgAghQEBAPgBACGGAQEA-AEAIYcBAQD4AQAhiwEgAPoBACGMAUAA-wEAIY0BQAD8AQAhjgFAAPwBACGzASAA-gEAIbUBAACaArUBIrcBAACbArcBIrgBIAD6AQAhuQEBAPkBACEQBAAAnAIAIAYAAJ4CACAHAACfAgAgCAAAoAIAIIUBAQD4AQAhhgEBAPgBACGHAQEA-AEAIYsBIAD6AQAhjAFAAPsBACGNAUAA_AEAIY4BQAD8AQAhswEgAPoBACG1AQAAmgK1ASK3AQAAmwK3ASK4ASAA-gEAIbkBAQD5AQAhEAQAAMgCACAFAADJAgAgBgAAygIAIAgAAMwCACCFAQEAAAABhgEBAAAAAYcBAQAAAAGLASAAAAABjAFAAAAAAY0BQAAAAAGOAUAAAAABswEgAAAAAbUBAAAAtQECtwEAAAC3AQK4ASAAAAABuQEBAAAAAQIAAAApACAWAADoAgAgAwAAACwAIBYAAOgCACAXAADsAgAgEgAAACwAIAQAAJwCACAFAACdAgAgBgAAngIAIAgAAKACACAPAADsAgAghQEBAPgBACGGAQEA-AEAIYcBAQD4AQAhiwEgAPoBACGMAUAA-wEAIY0BQAD8AQAhjgFAAPwBACGzASAA-gEAIbUBAACaArUBIrcBAACbArcBIrgBIAD6AQAhuQEBAPkBACEQBAAAnAIAIAUAAJ0CACAGAACeAgAgCAAAoAIAIIUBAQD4AQAhhgEBAPgBACGHAQEA-AEAIYsBIAD6AQAhjAFAAPsBACGNAUAA_AEAIY4BQAD8AQAhswEgAPoBACG1AQAAmgK1ASK3AQAAmwK3ASK4ASAA-gEAIbkBAQD5AQAhEAQAAMgCACAFAADJAgAgBwAAywIAIAgAAMwCACCFAQEAAAABhgEBAAAAAYcBAQAAAAGLASAAAAABjAFAAAAAAY0BQAAAAAGOAUAAAAABswEgAAAAAbUBAAAAtQECtwEAAAC3AQK4ASAAAAABuQEBAAAAAQIAAAApACAWAADtAgAgAwAAACwAIBYAAO0CACAXAADxAgAgEgAAACwAIAQAAJwCACAFAACdAgAgBwAAnwIAIAgAAKACACAPAADxAgAghQEBAPgBACGGAQEA-AEAIYcBAQD4AQAhiwEgAPoBACGMAUAA-wEAIY0BQAD8AQAhjgFAAPwBACGzASAA-gEAIbUBAACaArUBIrcBAACbArcBIrgBIAD6AQAhuQEBAPkBACEQBAAAnAIAIAUAAJ0CACAHAACfAgAgCAAAoAIAIIUBAQD4AQAhhgEBAPgBACGHAQEA-AEAIYsBIAD6AQAhjAFAAPsBACGNAUAA_AEAIY4BQAD8AQAhswEgAPoBACG1AQAAmgK1ASK3AQAAmwK3ASK4ASAA-gEAIbkBAQD5AQAhAQMAAgYEBgMFCgQGDAUHDgYIEAEJAAcBAwACAQMAAgEDAAIBAwACAgQRAAUSAAABAwACAQMAAgMJAAwcAA0dAA4AAAADCQAMHAANHQAOAAADCQATHAAUHQAVAAAAAwkAExwAFB0AFQEDAAIBAwACAwkAGhwAGx0AHAAAAAMJABocABsdABwBAwACAQMAAgMJACEcACIdACMAAAADCQAhHAAiHQAjAAAAAwkAKRwAKh0AKwAAAAMJACkcACodACsBAwACAQMAAgUJADAcADMdADRuADFvADIAAAAAAAUJADAcADMdADRuADFvADIBAwACAQMAAgMJADkcADodADsAAAADCQA5HAA6HQA7CgIBCxMBDBUBDRYBDhcBEBkBERsIEhwJEx4BFCAIFSEKGCIBGSMBGiQIHicLHygPICoCISsCIi4CIy8CJDACJTICJjQIJzUQKDcCKTkIKjoRKzsCLDwCLT0ILkASL0EWMEIDMUMDMkQDM0UDNEYDNUgDNkoIN0sXOE0DOU8IOlAYO1EDPFIDPVMIPlYZP1cdQFgEQVkEQloEQ1sERFwERV4ERmAIR2EeSGMESWUISmYfS2cETGgETWkITmwgT20kUG8lUXAlUnMlU3QlVHUlVXclVnkIV3omWHwlWX4IWn8nW4ABJVyBASVdggEIXoUBKF-GASxgiAEGYYkBBmKLAQZjjAEGZI0BBmWPAQZmkQEIZ5IBLWiUAQZplgEIapcBLmuYAQZsmQEGbZoBCHCdAS9xngE1cqABBXOhAQV0owEFdaQBBXalAQV3pwEFeKkBCHmqATZ6rAEFe64BCHyvATd9sAEFfrEBBX-yAQiAAbUBOIEBtgE8"
 };
 async function decodeBase64AsWasm(wasmBase64) {
   const { Buffer: Buffer2 } = await import("buffer");
@@ -2609,7 +2726,7 @@ function getPrismaClientClass() {
   return runtime.getPrismaClient(config);
 }
 
-// src/generated/internal/prismaNamespace.ts
+// src/generated/prisma/internal/prismaNamespace.ts
 import * as runtime2 from "@prisma/client/runtime/client";
 var getExtensionContext = runtime2.Extensions.getExtensionContext;
 var NullTypes2 = {
@@ -2625,7 +2742,20 @@ var TransactionIsolationLevel = runtime2.makeStrictEnum({
 });
 var defineExtension = runtime2.Extensions.defineExtension;
 
-// src/generated/client.ts
+// src/generated/prisma/enums.ts
+var Role = {
+  SUPER_ADMIN: "SUPER_ADMIN",
+  ADMIN: "ADMIN",
+  MODERATOR: "MODERATOR",
+  TOURIST: "TOURIST"
+};
+var UserStatus = {
+  ACTIVE: "ACTIVE",
+  BLOCKED: "BLOCKED",
+  DELETED: "DELETED"
+};
+
+// src/generated/prisma/client.ts
 globalThis["__dirname"] = path.dirname(fileURLToPath(import.meta.url));
 var PrismaClient = getPrismaClientClass();
 
@@ -2635,7 +2765,139 @@ var adapter = new PrismaPg({ connectionString });
 var prisma = new PrismaClient({ adapter });
 
 // src/lib/auth.ts
-import { oAuthProxy } from "better-auth/plugins";
+import { bearer, emailOTP } from "better-auth/plugins";
+
+// src/app/config/env.ts
+import dotenv from "dotenv";
+import status from "http-status";
+
+// src/app/errorHelpers/AppError.ts
+var AppError = class extends Error {
+  statusCode;
+  constructor(statusCode, message, stack = "") {
+    super(message);
+    this.statusCode = statusCode;
+    if (stack) {
+      this.stack = stack;
+    } else {
+      Error.captureStackTrace(this, this.constructor);
+    }
+  }
+};
+var AppError_default = AppError;
+
+// src/app/config/env.ts
+dotenv.config();
+var loadEnvVariables = () => {
+  const requireEnvVariable = [
+    "NODE_ENV",
+    "PORT",
+    "DATABASE_URL",
+    "BETTER_AUTH_SECRET",
+    "BETTER_AUTH_URL",
+    "ACCESS_TOKEN_SECRET",
+    "REFRESH_TOKEN_SECRET",
+    "ACCESS_TOKEN_EXPIRES_IN",
+    "REFRESH_TOKEN_EXPIRES_IN",
+    "BETTER_AUTH_SESSION_TOKEN_EXPIRES_IN",
+    "BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE",
+    "EMAIL_SENDER_SMTP_USER",
+    "EMAIL_SENDER_SMTP_PASS",
+    "EMAIL_SENDER_SMTP_HOST",
+    "EMAIL_SENDER_SMTP_PORT",
+    "EMAIL_SENDER_SMTP_FROM",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "GOOGLE_CALLBACK_URL",
+    "FRONTEND_URL",
+    "CLOUDINARY_CLOUD_NAME",
+    "CLOUDINARY_API_KEY",
+    "CLOUDINARY_API_SECRET"
+    // 'STRIPE_SECRET_KEY',
+    // 'STRIPE_WEBHOOK_SECRET',
+    // 'SUPER_ADMIN_EMAIL',
+    // 'SUPER_ADMIN_PASSWORD',
+  ];
+  requireEnvVariable.forEach((variable) => {
+    if (!process.env[variable]) {
+      throw new AppError_default(status.INTERNAL_SERVER_ERROR, `Environment variable ${variable} is required but not set in .env file.`);
+    }
+  });
+  return {
+    NODE_ENV: process.env.NODE_ENV,
+    PORT: process.env.PORT,
+    DATABASE_URL: process.env.DATABASE_URL,
+    BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
+    ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
+    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
+    ACCESS_TOKEN_EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN,
+    REFRESH_TOKEN_EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN,
+    BETTER_AUTH_SESSION_TOKEN_EXPIRES_IN: process.env.BETTER_AUTH_SESSION_TOKEN_EXPIRES_IN,
+    BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE: process.env.BETTER_AUTH_SESSION_TOKEN_UPDATE_AGE,
+    EMAIL_SENDER: {
+      SMTP_USER: process.env.EMAIL_SENDER_SMTP_USER,
+      SMTP_PASS: process.env.EMAIL_SENDER_SMTP_PASS,
+      SMTP_HOST: process.env.EMAIL_SENDER_SMTP_HOST,
+      SMTP_PORT: process.env.EMAIL_SENDER_SMTP_PORT,
+      SMTP_FROM: process.env.EMAIL_SENDER_SMTP_FROM
+    },
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL,
+    FRONTEND_URL: process.env.FRONTEND_URL,
+    CLOUDINARY: {
+      CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+      CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+      CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET
+    }
+    // STRIPE: {
+    //     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
+    //     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
+    // },
+    // SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
+    // SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string,
+  };
+};
+var envVars = loadEnvVariables();
+
+// src/app/utils/email.ts
+import ejs from "ejs";
+import status2 from "http-status";
+import nodemailer from "nodemailer";
+import path2 from "path";
+var transporter = nodemailer.createTransport({
+  host: envVars.EMAIL_SENDER.SMTP_HOST,
+  secure: true,
+  auth: {
+    user: envVars.EMAIL_SENDER.SMTP_USER,
+    pass: envVars.EMAIL_SENDER.SMTP_PASS
+  },
+  port: Number(envVars.EMAIL_SENDER.SMTP_PORT)
+});
+var sendEmail = async ({ subject, templateData, templateName, to, attachments }) => {
+  try {
+    const templatePath = path2.resolve(process.cwd(), `src/app/templates/${templateName}.ejs`);
+    const html = await ejs.renderFile(templatePath, templateData);
+    const info = await transporter.sendMail({
+      from: envVars.EMAIL_SENDER.SMTP_FROM,
+      to,
+      subject,
+      html,
+      attachments: attachments?.map((attachment) => ({
+        filename: attachment.filename,
+        content: attachment.content,
+        contentType: attachment.contentType
+      }))
+    });
+    console.log(`Email sent to ${to} : ${info.messageId}`);
+  } catch (error) {
+    console.log("Email Sending Error", error.message);
+    throw new AppError_default(status2.INTERNAL_SERVER_ERROR, "Failed to send email");
+  }
+};
+
+// src/lib/auth.ts
 var auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql"
@@ -2645,7 +2907,8 @@ var auth = betterAuth({
   trustedOrigins: [process.env.FRONTEND_URL],
   //...other options
   emailAndPassword: {
-    enabled: true
+    enabled: true,
+    requireEmailVerification: false
   },
   socialProviders: {
     google: {
@@ -2658,6 +2921,104 @@ var auth = betterAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET
     }
   },
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: true,
+        defaultValue: Role.TOURIST
+      },
+      status: {
+        type: "string",
+        required: true,
+        defaultValue: UserStatus.ACTIVE
+      },
+      needPasswordChange: {
+        type: "boolean",
+        required: true,
+        defaultValue: false
+      },
+      isDeleted: {
+        type: "boolean",
+        required: true,
+        defaultValue: false
+      },
+      deletedAt: {
+        type: "date",
+        required: false,
+        defaultValue: null
+      }
+    }
+  },
+  plugins: [
+    bearer(),
+    emailOTP({
+      overrideDefaultEmailVerification: true,
+      async sendVerificationOTP({ email, otp, type }) {
+        if (type === "email-verification") {
+          const user = await prisma.user.findUnique({
+            where: {
+              email
+            }
+          });
+          if (!user) {
+            console.error(`User with email ${email} not found. Cannot send verification OTP.`);
+            return;
+          }
+          if (user && user.role === Role.SUPER_ADMIN) {
+            console.log(`User with email ${email} is a super admin. Skipping sending verification OTP.`);
+            return;
+          }
+          if (user && !user.emailVerified) {
+            sendEmail({
+              to: email,
+              subject: "Verify your email",
+              templateName: "otp",
+              templateData: {
+                name: user.name,
+                otp
+              }
+            });
+          }
+        } else if (type === "forget-password") {
+          const user = await prisma.user.findUnique({
+            where: {
+              email
+            }
+          });
+          if (user) {
+            sendEmail({
+              to: email,
+              subject: "Password Reset OTP",
+              templateName: "otp",
+              templateData: {
+                name: user.name,
+                otp
+              }
+            });
+          }
+        }
+      },
+      expiresIn: 2 * 60,
+      // 2 minutes in seconds
+      otpLength: 6
+    })
+  ],
+  session: {
+    expiresIn: 60 * 60 * 60 * 24,
+    // 1 day in seconds
+    updateAge: 60 * 60 * 60 * 24,
+    // 1 day in seconds
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 60 * 60 * 24
+      // 1 day in seconds
+    }
+  },
+  redirectURLs: {
+    signIn: `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success`
+  },
+  // trustedOrigins: [process.env.BETTER_AUTH_URL || "http://localhost:5000", envVars.FRONTEND_URL],
   // account: { skipStateCookieCheck: true }, // solved redirect issue
   advanced: {
     cookies: {
@@ -2682,24 +3043,719 @@ var auth = betterAuth({
         }
       }
     }
-  },
-  plugins: [oAuthProxy()]
+  }
+  // plugins: [oAuthProxy()],
 });
 
-// src/app/modules/user/user.router.ts
+// src/app/routes/index.ts
+import { Router as Router2 } from "express";
+
+// src/app/modules/auth/auth.route.ts
 import { Router } from "express";
 
-// src/app/modules/user/user.controller.ts
-var getUsers = async (req, res) => {
+// src/app/modules/auth/auth.controller.ts
+var import_ms = __toESM(require_ms(), 1);
+import status4 from "http-status";
+
+// src/app/utils/cookie.ts
+var setCookie = (res, key, value, options) => {
+  res.cookie(key, value, options);
+};
+var getCookie = (req, key) => {
+  return req.cookies[key];
+};
+var clearCookie = (res, key, options) => {
+  res.clearCookie(key, options);
+};
+var CookieUtils = {
+  setCookie,
+  getCookie,
+  clearCookie
+};
+
+// src/app/utils/jwt.ts
+import jwt from "jsonwebtoken";
+var createToken = (payload, secret, { expiresIn }) => {
+  const token = jwt.sign(payload, secret, { expiresIn });
+  return token;
+};
+var verifyToken = (token, secret) => {
   try {
-    const data = await prisma.user.findMany();
-    res.status(200).send({ message: "User Retrieves", data });
+    const decoded = jwt.verify(token, secret);
+    return {
+      success: true,
+      data: decoded
+    };
   } catch (error) {
-    console.log(error);
+    return {
+      success: false,
+      message: error.message,
+      error
+    };
   }
 };
-var userController = {
-  getUsers
+var decodeToken = (token) => {
+  const decoded = jwt.decode(token);
+  return decoded;
+};
+var jwtUtils = {
+  createToken,
+  verifyToken,
+  decodeToken
+};
+
+// src/app/utils/token.ts
+var getAccessToken = (payload) => {
+  const accessToken = jwtUtils.createToken(
+    payload,
+    envVars.ACCESS_TOKEN_SECRET,
+    { expiresIn: envVars.ACCESS_TOKEN_EXPIRES_IN }
+  );
+  return accessToken;
+};
+var getRefreshToken = (payload) => {
+  const refreshToken = jwtUtils.createToken(
+    payload,
+    envVars.REFRESH_TOKEN_SECRET,
+    { expiresIn: envVars.REFRESH_TOKEN_EXPIRES_IN }
+  );
+  return refreshToken;
+};
+var setAccessTokenCookie = (res, token) => {
+  CookieUtils.setCookie(res, "accessToken", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    //1 day
+    maxAge: 60 * 60 * 24 * 1e3
+  });
+};
+var setRefreshTokenCookie = (res, token) => {
+  CookieUtils.setCookie(res, "refreshToken", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    //7d
+    maxAge: 60 * 60 * 24 * 1e3 * 7
+  });
+};
+var setBetterAuthSessionCookie = (res, token) => {
+  CookieUtils.setCookie(res, "better-auth.session_token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    //1 day
+    maxAge: 60 * 60 * 24 * 1e3
+  });
+};
+var tokenUtils = {
+  getAccessToken,
+  getRefreshToken,
+  setAccessTokenCookie,
+  setRefreshTokenCookie,
+  setBetterAuthSessionCookie
+};
+
+// src/app/modules/auth/auth.service.ts
+import status3 from "http-status";
+var registerTourist = async (payload) => {
+  const { name, email, password } = payload;
+  const data = await auth.api.signUpEmail({
+    body: {
+      name,
+      email,
+      password
+      //default values
+      // needsPasswordChange: false,
+      // role: Role.PATIENT
+    }
+  });
+  if (!data.user) {
+    throw new AppError_default(status3.BAD_REQUEST, "Failed to register patient");
+  }
+  try {
+    const tourist = await prisma.$transaction(async (tx) => {
+      const touristTx = await tx.tourist.create({
+        data: {
+          userId: data.user.id,
+          name: payload.name,
+          email: payload.email
+        }
+      });
+      return touristTx;
+    });
+    const accessToken = tokenUtils.getAccessToken({
+      userId: data.user.id,
+      role: data.user.role,
+      name: data.user.name,
+      email: data.user.email,
+      status: data.user.status,
+      isDeleted: data.user.isDeleted,
+      emailVerified: data.user.emailVerified
+    });
+    const refreshToken = tokenUtils.getRefreshToken({
+      userId: data.user.id,
+      role: data.user.role,
+      name: data.user.name,
+      email: data.user.email,
+      status: data.user.status,
+      isDeleted: data.user.isDeleted,
+      emailVerified: data.user.emailVerified
+    });
+    return {
+      ...data,
+      accessToken,
+      refreshToken,
+      tourist
+    };
+  } catch (error) {
+    console.log("Transaction error : ", error);
+    await prisma.user.delete({
+      where: {
+        id: data.user.id
+      }
+    });
+    throw error;
+  }
+};
+var loginUser = async (payload) => {
+  const { email, password } = payload;
+  const data = await auth.api.signInEmail({
+    body: {
+      email,
+      password
+    }
+  });
+  if (data.user.status === UserStatus.BLOCKED) {
+    throw new AppError_default(status3.FORBIDDEN, "User is blocked");
+  }
+  if (data.user.isDeleted || data.user.status === UserStatus.DELETED) {
+    throw new AppError_default(status3.NOT_FOUND, "User is deleted");
+  }
+  const accessToken = tokenUtils.getAccessToken({
+    userId: data.user.id,
+    role: data.user.role,
+    name: data.user.name,
+    email: data.user.email,
+    status: data.user.status,
+    isDeleted: data.user.isDeleted,
+    emailVerified: data.user.emailVerified
+  });
+  const refreshToken = tokenUtils.getRefreshToken({
+    userId: data.user.id,
+    role: data.user.role,
+    name: data.user.name,
+    email: data.user.email,
+    status: data.user.status,
+    isDeleted: data.user.isDeleted,
+    emailVerified: data.user.emailVerified
+  });
+  return {
+    ...data,
+    accessToken,
+    refreshToken
+  };
+};
+var getMe = async (user) => {
+  const isUserExists = await prisma.user.findUnique({
+    where: {
+      id: user.userId
+    },
+    include: {
+      tourist: {
+        include: {
+          // appointments : true,
+          // reviews : true,
+          // prescriptions : true,
+          // medicalReports : true,
+          // patientHealthData : true,
+        }
+      },
+      moderator: {
+        include: {
+          // specialties : true,
+          // appointments : true,
+          // reviews : true,
+          // prescriptions : true,
+        }
+      },
+      admin: true
+    }
+  });
+  if (!isUserExists) {
+    throw new AppError_default(status3.NOT_FOUND, "User not found");
+  }
+  return isUserExists;
+};
+var getNewToken = async (refreshToken, sessionToken) => {
+  const isSessionTokenExists = await prisma.session.findUnique({
+    where: {
+      token: sessionToken
+    },
+    include: {
+      user: true
+    }
+  });
+  if (!isSessionTokenExists) {
+    throw new AppError_default(status3.UNAUTHORIZED, "Invalid session token");
+  }
+  const verifiedRefreshToken = jwtUtils.verifyToken(refreshToken, envVars.REFRESH_TOKEN_SECRET);
+  if (!verifiedRefreshToken.success && verifiedRefreshToken.error) {
+    throw new AppError_default(status3.UNAUTHORIZED, "Invalid refresh token");
+  }
+  const data = verifiedRefreshToken.data;
+  const newAccessToken = tokenUtils.getAccessToken({
+    userId: data.userId,
+    role: data.role,
+    name: data.name,
+    email: data.email,
+    status: data.status,
+    isDeleted: data.isDeleted,
+    emailVerified: data.emailVerified
+  });
+  const newRefreshToken = tokenUtils.getRefreshToken({
+    userId: data.userId,
+    role: data.role,
+    name: data.name,
+    email: data.email,
+    status: data.status,
+    isDeleted: data.isDeleted,
+    emailVerified: data.emailVerified
+  });
+  const { token } = await prisma.session.update({
+    where: {
+      token: sessionToken
+    },
+    data: {
+      token: sessionToken,
+      expiresAt: new Date(Date.now() + 60 * 60 * 60 * 24 * 1e3),
+      updatedAt: /* @__PURE__ */ new Date()
+    }
+  });
+  return {
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
+    sessionToken: token
+  };
+};
+var changePassword = async (payload, sessionToken) => {
+  const session = await auth.api.getSession({
+    headers: new Headers({
+      Authorization: `Bearer ${sessionToken}`
+    })
+  });
+  if (!session) {
+    throw new AppError_default(status3.UNAUTHORIZED, "Invalid session token");
+  }
+  const { currentPassword, newPassword } = payload;
+  const result = await auth.api.changePassword({
+    body: {
+      currentPassword,
+      newPassword,
+      revokeOtherSessions: true
+    },
+    headers: new Headers({
+      Authorization: `Bearer ${sessionToken}`
+    })
+  });
+  if (session.user.needPasswordChange) {
+    await prisma.user.update({
+      where: {
+        id: session.user.id
+      },
+      data: {
+        needPasswordChange: false
+      }
+    });
+  }
+  const accessToken = tokenUtils.getAccessToken({
+    userId: session.user.id,
+    role: session.user.role,
+    name: session.user.name,
+    email: session.user.email,
+    status: session.user.status,
+    isDeleted: session.user.isDeleted,
+    emailVerified: session.user.emailVerified
+  });
+  const refreshToken = tokenUtils.getRefreshToken({
+    userId: session.user.id,
+    role: session.user.role,
+    name: session.user.name,
+    email: session.user.email,
+    status: session.user.status,
+    isDeleted: session.user.isDeleted,
+    emailVerified: session.user.emailVerified
+  });
+  return {
+    ...result,
+    accessToken,
+    refreshToken
+  };
+};
+var logoutUser = async (sessionToken) => {
+  const result = await auth.api.signOut({
+    headers: new Headers({
+      Authorization: `Bearer ${sessionToken}`
+    })
+  });
+  return result;
+};
+var verifyEmail = async (email, otp) => {
+  const result = await auth.api.verifyEmailOTP({
+    body: {
+      email,
+      otp
+    }
+  });
+  if (result.status && !result.user.emailVerified) {
+    await prisma.user.update({
+      where: {
+        email
+      },
+      data: {
+        emailVerified: true
+      }
+    });
+  }
+};
+var forgetPassword = async (email) => {
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      email
+    }
+  });
+  if (!isUserExist) {
+    throw new AppError_default(status3.NOT_FOUND, "User not found");
+  }
+  if (!isUserExist.emailVerified) {
+    throw new AppError_default(status3.BAD_REQUEST, "Email not verified");
+  }
+  if (isUserExist.isDeleted || isUserExist.status === UserStatus.DELETED) {
+    throw new AppError_default(status3.NOT_FOUND, "User not found");
+  }
+  await auth.api.requestPasswordResetEmailOTP({
+    body: {
+      email
+    }
+  });
+};
+var resetPassword = async (email, otp, newPassword) => {
+  const isUserExist = await prisma.user.findUnique({
+    where: {
+      email
+    }
+  });
+  if (!isUserExist) {
+    throw new AppError_default(status3.NOT_FOUND, "User not found");
+  }
+  if (!isUserExist.emailVerified) {
+    throw new AppError_default(status3.BAD_REQUEST, "Email not verified");
+  }
+  if (isUserExist.isDeleted || isUserExist.status === UserStatus.DELETED) {
+    throw new AppError_default(status3.NOT_FOUND, "User not found");
+  }
+  await auth.api.resetPasswordEmailOTP({
+    body: {
+      email,
+      otp,
+      password: newPassword
+    }
+  });
+  if (isUserExist.needPasswordChange) {
+    await prisma.user.update({
+      where: {
+        id: isUserExist.id
+      },
+      data: {
+        needPasswordChange: false
+      }
+    });
+  }
+  await prisma.session.deleteMany({
+    where: {
+      userId: isUserExist.id
+    }
+  });
+};
+var googleLoginSuccess = async (session) => {
+  const isPatientExists = await prisma.tourist.findUnique({
+    where: {
+      userId: session.user.id
+    }
+  });
+  if (!isPatientExists) {
+    await prisma.tourist.create({
+      data: {
+        userId: session.user.id,
+        name: session.user.name,
+        email: session.user.email
+      }
+    });
+  }
+  const accessToken = tokenUtils.getAccessToken({
+    userId: session.user.id,
+    role: session.user.role,
+    name: session.user.name
+  });
+  const refreshToken = tokenUtils.getRefreshToken({
+    userId: session.user.id,
+    role: session.user.role,
+    name: session.user.name
+  });
+  return {
+    accessToken,
+    refreshToken
+  };
+};
+var AuthService = {
+  registerTourist,
+  loginUser,
+  getMe,
+  getNewToken,
+  changePassword,
+  logoutUser,
+  verifyEmail,
+  forgetPassword,
+  resetPassword,
+  googleLoginSuccess
+};
+
+// src/app/shared/catchAsync.ts
+var catchAsync = (fn) => {
+  return async (req, res, next) => {
+    try {
+      await fn(req, res, next);
+    } catch (error) {
+      next(error);
+    }
+  };
+};
+
+// src/app/shared/sendResponse.ts
+var sendResponse = (res, responseData) => {
+  const { httpStatusCode, success, message, data, meta } = responseData;
+  res.status(httpStatusCode).json({
+    success,
+    message,
+    data,
+    meta
+  });
+};
+
+// src/app/modules/auth/auth.controller.ts
+var registerTourist2 = catchAsync(
+  async (req, res) => {
+    const maxAge = (0, import_ms.default)(envVars.ACCESS_TOKEN_EXPIRES_IN);
+    console.log({ maxAge });
+    const payload = req.body;
+    console.log(payload);
+    const result = await AuthService.registerTourist(payload);
+    const { accessToken, refreshToken, token, ...rest } = result;
+    tokenUtils.setAccessTokenCookie(res, accessToken);
+    tokenUtils.setRefreshTokenCookie(res, refreshToken);
+    tokenUtils.setBetterAuthSessionCookie(res, token);
+    sendResponse(res, {
+      httpStatusCode: status4.CREATED,
+      success: true,
+      message: "Patient registered successfully",
+      data: {
+        token,
+        accessToken,
+        refreshToken,
+        ...rest
+      }
+    });
+  }
+);
+var loginUser2 = catchAsync(
+  async (req, res) => {
+    const payload = req.body;
+    const result = await AuthService.loginUser(payload);
+    const { accessToken, refreshToken, token, ...rest } = result;
+    tokenUtils.setAccessTokenCookie(res, accessToken);
+    tokenUtils.setRefreshTokenCookie(res, refreshToken);
+    tokenUtils.setBetterAuthSessionCookie(res, token);
+    sendResponse(res, {
+      httpStatusCode: status4.OK,
+      success: true,
+      message: "User logged in successfully",
+      data: {
+        token,
+        accessToken,
+        refreshToken,
+        ...rest
+      }
+    });
+  }
+);
+var getMe2 = catchAsync(
+  async (req, res) => {
+    const user = req.user;
+    console.log({ user });
+    const result = await AuthService.getMe(user);
+    sendResponse(res, {
+      httpStatusCode: status4.OK,
+      success: true,
+      message: "User profile fetched successfully",
+      data: result
+    });
+  }
+);
+var getNewToken2 = catchAsync(
+  async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+    const betterAuthSessionToken = req.cookies["better-auth.session_token"];
+    if (!refreshToken) {
+      throw new AppError_default(status4.UNAUTHORIZED, "Refresh token is missing");
+    }
+    const result = await AuthService.getNewToken(refreshToken, betterAuthSessionToken);
+    const { accessToken, refreshToken: newRefreshToken, sessionToken } = result;
+    tokenUtils.setAccessTokenCookie(res, accessToken);
+    tokenUtils.setRefreshTokenCookie(res, newRefreshToken);
+    tokenUtils.setBetterAuthSessionCookie(res, sessionToken);
+    sendResponse(res, {
+      httpStatusCode: status4.OK,
+      success: true,
+      message: "New tokens generated successfully",
+      data: {
+        accessToken,
+        refreshToken: newRefreshToken,
+        sessionToken
+      }
+    });
+  }
+);
+var changePassword2 = catchAsync(
+  async (req, res) => {
+    const payload = req.body;
+    const betterAuthSessionToken = req.cookies["better-auth.session_token"];
+    const result = await AuthService.changePassword(payload, betterAuthSessionToken);
+    const { accessToken, refreshToken, token } = result;
+    tokenUtils.setAccessTokenCookie(res, accessToken);
+    tokenUtils.setRefreshTokenCookie(res, refreshToken);
+    tokenUtils.setBetterAuthSessionCookie(res, token);
+    sendResponse(res, {
+      httpStatusCode: status4.OK,
+      success: true,
+      message: "Password changed successfully",
+      data: result
+    });
+  }
+);
+var logoutUser2 = catchAsync(
+  async (req, res) => {
+    const betterAuthSessionToken = req.cookies["better-auth.session_token"];
+    const result = await AuthService.logoutUser(betterAuthSessionToken);
+    CookieUtils.clearCookie(res, "accessToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none"
+    });
+    CookieUtils.clearCookie(res, "refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none"
+    });
+    CookieUtils.clearCookie(res, "better-auth.session_token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none"
+    });
+    sendResponse(res, {
+      httpStatusCode: status4.OK,
+      success: true,
+      message: "User logged out successfully",
+      data: result
+    });
+  }
+);
+var verifyEmail2 = catchAsync(
+  async (req, res) => {
+    const { email, otp } = req.body;
+    await AuthService.verifyEmail(email, otp);
+    sendResponse(res, {
+      httpStatusCode: status4.OK,
+      success: true,
+      message: "Email verified successfully"
+    });
+  }
+);
+var forgetPassword2 = catchAsync(
+  async (req, res) => {
+    const { email } = req.body;
+    await AuthService.forgetPassword(email);
+    sendResponse(res, {
+      httpStatusCode: status4.OK,
+      success: true,
+      message: "Password reset OTP sent to email successfully"
+    });
+  }
+);
+var resetPassword2 = catchAsync(
+  async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+    await AuthService.resetPassword(email, otp, newPassword);
+    sendResponse(res, {
+      httpStatusCode: status4.OK,
+      success: true,
+      message: "Password reset successfully"
+    });
+  }
+);
+var googleLogin = catchAsync((req, res) => {
+  const redirectPath = req.query.redirect || "/dashboard";
+  const encodedRedirectPath = encodeURIComponent(redirectPath);
+  const callbackURL = `${envVars.BETTER_AUTH_URL}/api/v1/auth/google/success?redirect=${encodedRedirectPath}`;
+  res.render("googleRedirect", {
+    callbackURL,
+    betterAuthUrl: envVars.BETTER_AUTH_URL
+  });
+});
+var googleLoginSuccess2 = catchAsync(async (req, res) => {
+  const redirectPath = req.query.redirect || "/dashboard";
+  const sessionToken = req.cookies["better-auth.session_token"];
+  if (!sessionToken) {
+    return res.redirect(`${envVars.FRONTEND_URL}/login?error=oauth_failed`);
+  }
+  const session = await auth.api.getSession({
+    headers: {
+      "Cookie": `better-auth.session_token=${sessionToken}`
+    }
+  });
+  if (!session) {
+    return res.redirect(`${envVars.FRONTEND_URL}/login?error=no_session_found`);
+  }
+  if (session && !session.user) {
+    return res.redirect(`${envVars.FRONTEND_URL}/login?error=no_user_found`);
+  }
+  const result = await AuthService.googleLoginSuccess(session);
+  const { accessToken, refreshToken } = result;
+  tokenUtils.setAccessTokenCookie(res, accessToken);
+  tokenUtils.setRefreshTokenCookie(res, refreshToken);
+  const isValidRedirectPath = redirectPath.startsWith("/") && !redirectPath.startsWith("//");
+  const finalRedirectPath = isValidRedirectPath ? redirectPath : "/dashboard";
+  res.redirect(`${envVars.FRONTEND_URL}${finalRedirectPath}`);
+});
+var handleOAuthError = catchAsync((req, res) => {
+  const error = req.query.error || "oauth_failed";
+  res.redirect(`${envVars.FRONTEND_URL}/login?error=${error}`);
+});
+var AuthController = {
+  registerTourist: registerTourist2,
+  loginUser: loginUser2,
+  getMe: getMe2,
+  getNewToken: getNewToken2,
+  changePassword: changePassword2,
+  logoutUser: logoutUser2,
+  verifyEmail: verifyEmail2,
+  forgetPassword: forgetPassword2,
+  resetPassword: resetPassword2,
+  googleLogin,
+  googleLoginSuccess: googleLoginSuccess2,
+  handleOAuthError
 };
 
 // src/app/middleware/auth.ts
@@ -2715,16 +3771,32 @@ var checkAuth = (...authRoles) => async (req, res, next) => {
   }
 };
 
-// src/app/modules/user/user.router.ts
-var userRouter = Router();
-userRouter.get("/", checkAuth(), userController.getUsers);
-var user_router_default = userRouter;
+// src/app/modules/auth/auth.route.ts
+var router = Router();
+router.post("/register", AuthController.registerTourist);
+router.post("/login", AuthController.loginUser);
+router.get("/me", checkAuth(Role.ADMIN, Role.MODERATOR, Role.TOURIST, Role.SUPER_ADMIN), AuthController.getMe);
+router.post("/refresh-token", AuthController.getNewToken);
+router.post("/change-password", checkAuth(Role.ADMIN, Role.MODERATOR, Role.TOURIST, Role.SUPER_ADMIN), AuthController.changePassword);
+router.post("/logout", checkAuth(Role.ADMIN, Role.MODERATOR, Role.TOURIST, Role.SUPER_ADMIN), AuthController.logoutUser);
+router.post("/verify-email", AuthController.verifyEmail);
+router.post("/forget-password", AuthController.forgetPassword);
+router.post("/reset-password", AuthController.resetPassword);
+router.get("/login/google", AuthController.googleLogin);
+router.get("/google/success", AuthController.googleLoginSuccess);
+router.get("/oauth/error", AuthController.handleOAuthError);
+var AuthRoutes = router;
+
+// src/app/routes/index.ts
+var router2 = Router2();
+router2.use("/auth", AuthRoutes);
+var IndexRoutes = router2;
 
 // src/app.ts
 var app = express();
 app.set("query parser", (str) => import_qs.default.parse(str));
 app.set("view engine", "ejs");
-app.set("views", path2.resolve(process.cwd(), `src/app/templates`));
+app.set("views", path3.resolve(process.cwd(), `src/app/templates`));
 app.use(cookieParser());
 app.use(
   cors({
@@ -2738,7 +3810,7 @@ app.use("/api/auth", toNodeHandler(auth));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/api/v1/users", user_router_default);
+app.use("/api/v1", IndexRoutes);
 app.get("/", async (req, res) => {
   res.status(201).json({
     success: true,
