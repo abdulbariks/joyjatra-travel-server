@@ -26,7 +26,8 @@ model Moderator {
     userId String @unique
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-    // reviews         Review[]
+
+    events           Event[]
 
     @@index([email], name: "idx_moderator_email")
     @@index([isDeleted], name: "idx_moderator_isDeleted")
