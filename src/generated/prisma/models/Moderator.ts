@@ -337,6 +337,7 @@ export type ModeratorWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Moderator"> | Date | string
   userId?: Prisma.StringFilter<"Moderator"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  events?: Prisma.EventListRelationFilter
 }
 
 export type ModeratorOrderByWithRelationInput = {
@@ -360,6 +361,7 @@ export type ModeratorOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  events?: Prisma.EventOrderByRelationAggregateInput
 }
 
 export type ModeratorWhereUniqueInput = Prisma.AtLeast<{
@@ -386,6 +388,7 @@ export type ModeratorWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Moderator"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Moderator"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  events?: Prisma.EventListRelationFilter
 }, "id" | "email" | "registrationNumber" | "userId">
 
 export type ModeratorOrderByWithAggregationInput = {
@@ -460,6 +463,7 @@ export type ModeratorCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutModeratorInput
+  events?: Prisma.EventCreateNestedManyWithoutModeratorInput
 }
 
 export type ModeratorUncheckedCreateInput = {
@@ -482,6 +486,7 @@ export type ModeratorUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutModeratorInput
 }
 
 export type ModeratorUpdateInput = {
@@ -504,6 +509,7 @@ export type ModeratorUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutModeratorNestedInput
+  events?: Prisma.EventUpdateManyWithoutModeratorNestedInput
 }
 
 export type ModeratorUncheckedUpdateInput = {
@@ -526,6 +532,7 @@ export type ModeratorUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  events?: Prisma.EventUncheckedUpdateManyWithoutModeratorNestedInput
 }
 
 export type ModeratorCreateManyInput = {
@@ -596,6 +603,11 @@ export type ModeratorUncheckedUpdateManyInput = {
 export type ModeratorNullableScalarRelationFilter = {
   is?: Prisma.ModeratorWhereInput | null
   isNot?: Prisma.ModeratorWhereInput | null
+}
+
+export type ModeratorScalarRelationFilter = {
+  is?: Prisma.ModeratorWhereInput
+  isNot?: Prisma.ModeratorWhereInput
 }
 
 export type ModeratorCountOrderByAggregateInput = {
@@ -708,6 +720,20 @@ export type ModeratorUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ModeratorUpdateToOneWithWhereWithoutUserInput, Prisma.ModeratorUpdateWithoutUserInput>, Prisma.ModeratorUncheckedUpdateWithoutUserInput>
 }
 
+export type ModeratorCreateNestedOneWithoutEventsInput = {
+  create?: Prisma.XOR<Prisma.ModeratorCreateWithoutEventsInput, Prisma.ModeratorUncheckedCreateWithoutEventsInput>
+  connectOrCreate?: Prisma.ModeratorCreateOrConnectWithoutEventsInput
+  connect?: Prisma.ModeratorWhereUniqueInput
+}
+
+export type ModeratorUpdateOneRequiredWithoutEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.ModeratorCreateWithoutEventsInput, Prisma.ModeratorUncheckedCreateWithoutEventsInput>
+  connectOrCreate?: Prisma.ModeratorCreateOrConnectWithoutEventsInput
+  upsert?: Prisma.ModeratorUpsertWithoutEventsInput
+  connect?: Prisma.ModeratorWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ModeratorUpdateToOneWithWhereWithoutEventsInput, Prisma.ModeratorUpdateWithoutEventsInput>, Prisma.ModeratorUncheckedUpdateWithoutEventsInput>
+}
+
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
@@ -718,14 +744,6 @@ export type IntFieldUpdateOperationsInput = {
 
 export type EnumGenderFieldUpdateOperationsInput = {
   set?: $Enums.Gender
-}
-
-export type FloatFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type ModeratorCreateWithoutUserInput = {
@@ -747,6 +765,7 @@ export type ModeratorCreateWithoutUserInput = {
   averageRating?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  events?: Prisma.EventCreateNestedManyWithoutModeratorInput
 }
 
 export type ModeratorUncheckedCreateWithoutUserInput = {
@@ -768,6 +787,7 @@ export type ModeratorUncheckedCreateWithoutUserInput = {
   averageRating?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  events?: Prisma.EventUncheckedCreateNestedManyWithoutModeratorInput
 }
 
 export type ModeratorCreateOrConnectWithoutUserInput = {
@@ -805,6 +825,7 @@ export type ModeratorUpdateWithoutUserInput = {
   averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUpdateManyWithoutModeratorNestedInput
 }
 
 export type ModeratorUncheckedUpdateWithoutUserInput = {
@@ -826,8 +847,142 @@ export type ModeratorUncheckedUpdateWithoutUserInput = {
   averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.EventUncheckedUpdateManyWithoutModeratorNestedInput
 }
 
+export type ModeratorCreateWithoutEventsInput = {
+  id?: string
+  name: string
+  email: string
+  profilePhoto?: string | null
+  contactNumber?: string | null
+  address?: string | null
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  registrationNumber: string
+  experience?: number
+  gender?: $Enums.Gender
+  appointmentFee: number
+  qualification: string
+  currentWorkingPlace: string
+  designation: string
+  averageRating?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutModeratorInput
+}
+
+export type ModeratorUncheckedCreateWithoutEventsInput = {
+  id?: string
+  name: string
+  email: string
+  profilePhoto?: string | null
+  contactNumber?: string | null
+  address?: string | null
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  registrationNumber: string
+  experience?: number
+  gender?: $Enums.Gender
+  appointmentFee: number
+  qualification: string
+  currentWorkingPlace: string
+  designation: string
+  averageRating?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userId: string
+}
+
+export type ModeratorCreateOrConnectWithoutEventsInput = {
+  where: Prisma.ModeratorWhereUniqueInput
+  create: Prisma.XOR<Prisma.ModeratorCreateWithoutEventsInput, Prisma.ModeratorUncheckedCreateWithoutEventsInput>
+}
+
+export type ModeratorUpsertWithoutEventsInput = {
+  update: Prisma.XOR<Prisma.ModeratorUpdateWithoutEventsInput, Prisma.ModeratorUncheckedUpdateWithoutEventsInput>
+  create: Prisma.XOR<Prisma.ModeratorCreateWithoutEventsInput, Prisma.ModeratorUncheckedCreateWithoutEventsInput>
+  where?: Prisma.ModeratorWhereInput
+}
+
+export type ModeratorUpdateToOneWithWhereWithoutEventsInput = {
+  where?: Prisma.ModeratorWhereInput
+  data: Prisma.XOR<Prisma.ModeratorUpdateWithoutEventsInput, Prisma.ModeratorUncheckedUpdateWithoutEventsInput>
+}
+
+export type ModeratorUpdateWithoutEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  experience?: Prisma.IntFieldUpdateOperationsInput | number
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  qualification?: Prisma.StringFieldUpdateOperationsInput | string
+  currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
+  designation?: Prisma.StringFieldUpdateOperationsInput | string
+  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutModeratorNestedInput
+}
+
+export type ModeratorUncheckedUpdateWithoutEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  experience?: Prisma.IntFieldUpdateOperationsInput | number
+  gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
+  qualification?: Prisma.StringFieldUpdateOperationsInput | string
+  currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
+  designation?: Prisma.StringFieldUpdateOperationsInput | string
+  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+
+/**
+ * Count Type ModeratorCountOutputType
+ */
+
+export type ModeratorCountOutputType = {
+  events: number
+}
+
+export type ModeratorCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  events?: boolean | ModeratorCountOutputTypeCountEventsArgs
+}
+
+/**
+ * ModeratorCountOutputType without action
+ */
+export type ModeratorCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ModeratorCountOutputType
+   */
+  select?: Prisma.ModeratorCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ModeratorCountOutputType without action
+ */
+export type ModeratorCountOutputTypeCountEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EventWhereInput
+}
 
 
 export type ModeratorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -851,6 +1006,8 @@ export type ModeratorSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   updatedAt?: boolean
   userId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  events?: boolean | Prisma.Moderator$eventsArgs<ExtArgs>
+  _count?: boolean | Prisma.ModeratorCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["moderator"]>
 
 export type ModeratorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -924,6 +1081,8 @@ export type ModeratorSelectScalar = {
 export type ModeratorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "profilePhoto" | "contactNumber" | "address" | "isDeleted" | "deletedAt" | "registrationNumber" | "experience" | "gender" | "appointmentFee" | "qualification" | "currentWorkingPlace" | "designation" | "averageRating" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["moderator"]>
 export type ModeratorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  events?: boolean | Prisma.Moderator$eventsArgs<ExtArgs>
+  _count?: boolean | Prisma.ModeratorCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ModeratorIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -936,6 +1095,7 @@ export type $ModeratorPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   name: "Moderator"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    events: Prisma.$EventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1352,6 +1512,7 @@ readonly fields: ModeratorFieldRefs;
 export interface Prisma__ModeratorClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  events<T extends Prisma.Moderator$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Moderator$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1793,6 +1954,30 @@ export type ModeratorDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many Moderators to delete.
    */
   limit?: number
+}
+
+/**
+ * Moderator.events
+ */
+export type Moderator$eventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Event
+   */
+  select?: Prisma.EventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Event
+   */
+  omit?: Prisma.EventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventInclude<ExtArgs> | null
+  where?: Prisma.EventWhereInput
+  orderBy?: Prisma.EventOrderByWithRelationInput | Prisma.EventOrderByWithRelationInput[]
+  cursor?: Prisma.EventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EventScalarFieldEnum | Prisma.EventScalarFieldEnum[]
 }
 
 /**

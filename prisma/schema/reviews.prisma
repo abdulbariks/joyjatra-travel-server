@@ -1,9 +1,9 @@
 model Review {
     id String @id @default(uuid(7))
 
-    rating Int
-    comment String?
-    isDeleted Boolean @default(false)
+    rating    Int
+    comment   String?
+    isDeleted Boolean   @default(false)
     deletedAt DateTime?
 
     createdAt DateTime @default(now())
@@ -11,13 +11,15 @@ model Review {
 
     // relations
     eventId String
-    event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     touristId String
-    tourist   Tourist @relation(fields: [touristId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    // tourist   Tourist @relation(fields: [touristId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     moderatorId String
-    moderator   Moderator @relation(fields: [moderatorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    // moderator   Moderator @relation(fields: [moderatorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    blog        Blog?   @relation(fields: [blogId], references: [id])
+    blogId      String?
 
     @@index([isDeleted], name: "idx_review_isDeleted")
     @@map("review")
