@@ -13,12 +13,12 @@ model Tourist {
 
     //relations
 
-    userId String @unique
-    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    userId  String   @unique
+    user    User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     //   appointments      Appointment[]
     //   prescriptions     Prescription[]
     //   medicalReports    MedicalReport[]
-    //   reviews           Review[]
+    reviews Review[]
     //   patientHealthData PatientHealthData?
 
     @@index([email], name: "idx_tourist_email")

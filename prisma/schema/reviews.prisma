@@ -1,0 +1,29 @@
+model Review {
+    id String @id @default(uuid(7))
+
+    rating    Int
+    comment   String?
+    isDeleted Boolean   @default(false)
+    deletedAt DateTime?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // The User who wrote the review
+    userId  String
+    tourist Tourist @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // Optional: Link to Blog
+    blogId String?
+    blog   Blog?   @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+    // Optional: Link to Event
+    eventId String?
+    event   Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+    @@index([isDeleted], name: "idx_review_isDeleted")
+    @@index([userId])
+    @@index([blogId])
+    @@index([eventId])
+    @@map("review")
+}

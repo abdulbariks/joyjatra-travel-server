@@ -67,10 +67,25 @@ export type Account = Prisma.AccountModel
  */
 export type Verification = Prisma.VerificationModel
 /**
+ * Model Blog
+ * 
+ */
+export type Blog = Prisma.BlogModel
+/**
+ * Model Event
+ * 
+ */
+export type Event = Prisma.EventModel
+/**
  * Model Moderator
  * 
  */
 export type Moderator = Prisma.ModeratorModel
+/**
+ * Model Review
+ * 
+ */
+export type Review = Prisma.ReviewModel
 /**
  * Model Tourist
  * 
