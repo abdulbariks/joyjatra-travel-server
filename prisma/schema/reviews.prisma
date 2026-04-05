@@ -9,18 +9,21 @@ model Review {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    // relations
-    eventId String
-    event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    // The User who wrote the review
+    userId  String
+    tourist Tourist @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    touristId String
-    // tourist   Tourist @relation(fields: [touristId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    // Optional: Link to Blog
+    blogId String?
+    blog   Blog?   @relation(fields: [blogId], references: [id], onDelete: Cascade)
 
-    moderatorId String
-    // moderator   Moderator @relation(fields: [moderatorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    blog        Blog?   @relation(fields: [blogId], references: [id])
-    blogId      String?
+    // Optional: Link to Event
+    eventId String?
+    event   Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
     @@index([isDeleted], name: "idx_review_isDeleted")
+    @@index([userId])
+    @@index([blogId])
+    @@index([eventId])
     @@map("review")
 }
