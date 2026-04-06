@@ -231,6 +231,7 @@ export type TouristWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Tourist"> | Date | string
   userId?: Prisma.StringFilter<"Tourist"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  reviews?: Prisma.ReviewListRelationFilter
 }
 
 export type TouristOrderByWithRelationInput = {
@@ -246,6 +247,7 @@ export type TouristOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  reviews?: Prisma.ReviewOrderByRelationAggregateInput
 }
 
 export type TouristWhereUniqueInput = Prisma.AtLeast<{
@@ -264,6 +266,7 @@ export type TouristWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Tourist"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tourist"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  reviews?: Prisma.ReviewListRelationFilter
 }, "id" | "email" | "userId">
 
 export type TouristOrderByWithAggregationInput = {
@@ -312,6 +315,7 @@ export type TouristCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTouristInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutTouristInput
 }
 
 export type TouristUncheckedCreateInput = {
@@ -326,6 +330,7 @@ export type TouristUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutTouristInput
 }
 
 export type TouristUpdateInput = {
@@ -340,6 +345,7 @@ export type TouristUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTouristNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutTouristNestedInput
 }
 
 export type TouristUncheckedUpdateInput = {
@@ -354,6 +360,7 @@ export type TouristUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutTouristNestedInput
 }
 
 export type TouristCreateManyInput = {
@@ -400,6 +407,11 @@ export type TouristUncheckedUpdateManyInput = {
 export type TouristNullableScalarRelationFilter = {
   is?: Prisma.TouristWhereInput | null
   isNot?: Prisma.TouristWhereInput | null
+}
+
+export type TouristScalarRelationFilter = {
+  is?: Prisma.TouristWhereInput
+  isNot?: Prisma.TouristWhereInput
 }
 
 export type TouristCountOrderByAggregateInput = {
@@ -476,6 +488,20 @@ export type TouristUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TouristUpdateToOneWithWhereWithoutUserInput, Prisma.TouristUpdateWithoutUserInput>, Prisma.TouristUncheckedUpdateWithoutUserInput>
 }
 
+export type TouristCreateNestedOneWithoutReviewsInput = {
+  create?: Prisma.XOR<Prisma.TouristCreateWithoutReviewsInput, Prisma.TouristUncheckedCreateWithoutReviewsInput>
+  connectOrCreate?: Prisma.TouristCreateOrConnectWithoutReviewsInput
+  connect?: Prisma.TouristWhereUniqueInput
+}
+
+export type TouristUpdateOneRequiredWithoutReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.TouristCreateWithoutReviewsInput, Prisma.TouristUncheckedCreateWithoutReviewsInput>
+  connectOrCreate?: Prisma.TouristCreateOrConnectWithoutReviewsInput
+  upsert?: Prisma.TouristUpsertWithoutReviewsInput
+  connect?: Prisma.TouristWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TouristUpdateToOneWithWhereWithoutReviewsInput, Prisma.TouristUpdateWithoutReviewsInput>, Prisma.TouristUncheckedUpdateWithoutReviewsInput>
+}
+
 export type TouristCreateWithoutUserInput = {
   id?: string
   name: string
@@ -487,6 +513,7 @@ export type TouristCreateWithoutUserInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  reviews?: Prisma.ReviewCreateNestedManyWithoutTouristInput
 }
 
 export type TouristUncheckedCreateWithoutUserInput = {
@@ -500,6 +527,7 @@ export type TouristUncheckedCreateWithoutUserInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutTouristInput
 }
 
 export type TouristCreateOrConnectWithoutUserInput = {
@@ -529,6 +557,7 @@ export type TouristUpdateWithoutUserInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.ReviewUpdateManyWithoutTouristNestedInput
 }
 
 export type TouristUncheckedUpdateWithoutUserInput = {
@@ -542,8 +571,110 @@ export type TouristUncheckedUpdateWithoutUserInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutTouristNestedInput
 }
 
+export type TouristCreateWithoutReviewsInput = {
+  id?: string
+  name: string
+  email: string
+  profilePhoto?: string | null
+  contactNumber?: string | null
+  address?: string | null
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutTouristInput
+}
+
+export type TouristUncheckedCreateWithoutReviewsInput = {
+  id?: string
+  name: string
+  email: string
+  profilePhoto?: string | null
+  contactNumber?: string | null
+  address?: string | null
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userId: string
+}
+
+export type TouristCreateOrConnectWithoutReviewsInput = {
+  where: Prisma.TouristWhereUniqueInput
+  create: Prisma.XOR<Prisma.TouristCreateWithoutReviewsInput, Prisma.TouristUncheckedCreateWithoutReviewsInput>
+}
+
+export type TouristUpsertWithoutReviewsInput = {
+  update: Prisma.XOR<Prisma.TouristUpdateWithoutReviewsInput, Prisma.TouristUncheckedUpdateWithoutReviewsInput>
+  create: Prisma.XOR<Prisma.TouristCreateWithoutReviewsInput, Prisma.TouristUncheckedCreateWithoutReviewsInput>
+  where?: Prisma.TouristWhereInput
+}
+
+export type TouristUpdateToOneWithWhereWithoutReviewsInput = {
+  where?: Prisma.TouristWhereInput
+  data: Prisma.XOR<Prisma.TouristUpdateWithoutReviewsInput, Prisma.TouristUncheckedUpdateWithoutReviewsInput>
+}
+
+export type TouristUpdateWithoutReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutTouristNestedInput
+}
+
+export type TouristUncheckedUpdateWithoutReviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+
+/**
+ * Count Type TouristCountOutputType
+ */
+
+export type TouristCountOutputType = {
+  reviews: number
+}
+
+export type TouristCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  reviews?: boolean | TouristCountOutputTypeCountReviewsArgs
+}
+
+/**
+ * TouristCountOutputType without action
+ */
+export type TouristCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TouristCountOutputType
+   */
+  select?: Prisma.TouristCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * TouristCountOutputType without action
+ */
+export type TouristCountOutputTypeCountReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReviewWhereInput
+}
 
 
 export type TouristSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -559,6 +690,8 @@ export type TouristSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updatedAt?: boolean
   userId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  reviews?: boolean | Prisma.Tourist$reviewsArgs<ExtArgs>
+  _count?: boolean | Prisma.TouristCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tourist"]>
 
 export type TouristSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -608,6 +741,8 @@ export type TouristSelectScalar = {
 export type TouristOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "profilePhoto" | "contactNumber" | "address" | "isDeleted" | "deletedAt" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["tourist"]>
 export type TouristInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  reviews?: boolean | Prisma.Tourist$reviewsArgs<ExtArgs>
+  _count?: boolean | Prisma.TouristCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TouristIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -620,6 +755,7 @@ export type $TouristPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Tourist"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    reviews: Prisma.$ReviewPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1028,6 +1164,7 @@ readonly fields: TouristFieldRefs;
 export interface Prisma__TouristClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  reviews<T extends Prisma.Tourist$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tourist$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1461,6 +1598,30 @@ export type TouristDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Tourists to delete.
    */
   limit?: number
+}
+
+/**
+ * Tourist.reviews
+ */
+export type Tourist$reviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Review
+   */
+  select?: Prisma.ReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Review
+   */
+  omit?: Prisma.ReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewInclude<ExtArgs> | null
+  where?: Prisma.ReviewWhereInput
+  orderBy?: Prisma.ReviewOrderByWithRelationInput | Prisma.ReviewOrderByWithRelationInput[]
+  cursor?: Prisma.ReviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReviewScalarFieldEnum | Prisma.ReviewScalarFieldEnum[]
 }
 
 /**

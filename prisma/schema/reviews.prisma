@@ -5,13 +5,12 @@ model Review {
     comment   String?
     isDeleted Boolean   @default(false)
     deletedAt DateTime?
-
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
     // The User who wrote the review
-    userId  String
-    tourist Tourist @relation(fields: [userId], references: [id], onDelete: Cascade)
+    touristId  String
+    tourist Tourist @relation(fields: [touristId], references: [id], onDelete: Cascade)
 
     // Optional: Link to Blog
     blogId String?
@@ -22,7 +21,7 @@ model Review {
     event   Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
     @@index([isDeleted], name: "idx_review_isDeleted")
-    @@index([userId])
+    @@index([touristId])
     @@index([blogId])
     @@index([eventId])
     @@map("review")
