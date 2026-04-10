@@ -16,7 +16,7 @@ model Blog {
     reviews Review[]
 
     moderatorId String
-    // moderator   Moderator @relation(fields: [moderatorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    moderator   Moderator @relation(fields: [moderatorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
     @@index([isDeleted], name: "idx_blog_isDeleted")
     @@map("blog")

@@ -28,14 +28,10 @@ export type AggregateModerator = {
 
 export type ModeratorAvgAggregateOutputType = {
   experience: number | null
-  appointmentFee: number | null
-  averageRating: number | null
 }
 
 export type ModeratorSumAggregateOutputType = {
   experience: number | null
-  appointmentFee: number | null
-  averageRating: number | null
 }
 
 export type ModeratorMinAggregateOutputType = {
@@ -47,14 +43,9 @@ export type ModeratorMinAggregateOutputType = {
   address: string | null
   isDeleted: boolean | null
   deletedAt: Date | null
-  registrationNumber: string | null
   experience: number | null
   gender: $Enums.Gender | null
-  appointmentFee: number | null
   qualification: string | null
-  currentWorkingPlace: string | null
-  designation: string | null
-  averageRating: number | null
   createdAt: Date | null
   updatedAt: Date | null
   userId: string | null
@@ -69,14 +60,9 @@ export type ModeratorMaxAggregateOutputType = {
   address: string | null
   isDeleted: boolean | null
   deletedAt: Date | null
-  registrationNumber: string | null
   experience: number | null
   gender: $Enums.Gender | null
-  appointmentFee: number | null
   qualification: string | null
-  currentWorkingPlace: string | null
-  designation: string | null
-  averageRating: number | null
   createdAt: Date | null
   updatedAt: Date | null
   userId: string | null
@@ -91,14 +77,9 @@ export type ModeratorCountAggregateOutputType = {
   address: number
   isDeleted: number
   deletedAt: number
-  registrationNumber: number
   experience: number
   gender: number
-  appointmentFee: number
   qualification: number
-  currentWorkingPlace: number
-  designation: number
-  averageRating: number
   createdAt: number
   updatedAt: number
   userId: number
@@ -108,14 +89,10 @@ export type ModeratorCountAggregateOutputType = {
 
 export type ModeratorAvgAggregateInputType = {
   experience?: true
-  appointmentFee?: true
-  averageRating?: true
 }
 
 export type ModeratorSumAggregateInputType = {
   experience?: true
-  appointmentFee?: true
-  averageRating?: true
 }
 
 export type ModeratorMinAggregateInputType = {
@@ -127,14 +104,9 @@ export type ModeratorMinAggregateInputType = {
   address?: true
   isDeleted?: true
   deletedAt?: true
-  registrationNumber?: true
   experience?: true
   gender?: true
-  appointmentFee?: true
   qualification?: true
-  currentWorkingPlace?: true
-  designation?: true
-  averageRating?: true
   createdAt?: true
   updatedAt?: true
   userId?: true
@@ -149,14 +121,9 @@ export type ModeratorMaxAggregateInputType = {
   address?: true
   isDeleted?: true
   deletedAt?: true
-  registrationNumber?: true
   experience?: true
   gender?: true
-  appointmentFee?: true
   qualification?: true
-  currentWorkingPlace?: true
-  designation?: true
-  averageRating?: true
   createdAt?: true
   updatedAt?: true
   userId?: true
@@ -171,14 +138,9 @@ export type ModeratorCountAggregateInputType = {
   address?: true
   isDeleted?: true
   deletedAt?: true
-  registrationNumber?: true
   experience?: true
   gender?: true
-  appointmentFee?: true
   qualification?: true
-  currentWorkingPlace?: true
-  designation?: true
-  averageRating?: true
   createdAt?: true
   updatedAt?: true
   userId?: true
@@ -280,14 +242,9 @@ export type ModeratorGroupByOutputType = {
   address: string | null
   isDeleted: boolean
   deletedAt: Date | null
-  registrationNumber: string
   experience: number
   gender: $Enums.Gender
-  appointmentFee: number
   qualification: string
-  currentWorkingPlace: string
-  designation: string
-  averageRating: number
   createdAt: Date
   updatedAt: Date
   userId: string
@@ -325,14 +282,9 @@ export type ModeratorWhereInput = {
   address?: Prisma.StringNullableFilter<"Moderator"> | string | null
   isDeleted?: Prisma.BoolFilter<"Moderator"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"Moderator"> | Date | string | null
-  registrationNumber?: Prisma.StringFilter<"Moderator"> | string
   experience?: Prisma.IntFilter<"Moderator"> | number
   gender?: Prisma.EnumGenderFilter<"Moderator"> | $Enums.Gender
-  appointmentFee?: Prisma.FloatFilter<"Moderator"> | number
   qualification?: Prisma.StringFilter<"Moderator"> | string
-  currentWorkingPlace?: Prisma.StringFilter<"Moderator"> | string
-  designation?: Prisma.StringFilter<"Moderator"> | string
-  averageRating?: Prisma.FloatFilter<"Moderator"> | number
   createdAt?: Prisma.DateTimeFilter<"Moderator"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Moderator"> | Date | string
   userId?: Prisma.StringFilter<"Moderator"> | string
@@ -349,14 +301,9 @@ export type ModeratorOrderByWithRelationInput = {
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  registrationNumber?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  appointmentFee?: Prisma.SortOrder
   qualification?: Prisma.SortOrder
-  currentWorkingPlace?: Prisma.SortOrder
-  designation?: Prisma.SortOrder
-  averageRating?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -367,7 +314,6 @@ export type ModeratorOrderByWithRelationInput = {
 export type ModeratorWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
-  registrationNumber?: string
   userId?: string
   AND?: Prisma.ModeratorWhereInput | Prisma.ModeratorWhereInput[]
   OR?: Prisma.ModeratorWhereInput[]
@@ -380,16 +326,12 @@ export type ModeratorWhereUniqueInput = Prisma.AtLeast<{
   deletedAt?: Prisma.DateTimeNullableFilter<"Moderator"> | Date | string | null
   experience?: Prisma.IntFilter<"Moderator"> | number
   gender?: Prisma.EnumGenderFilter<"Moderator"> | $Enums.Gender
-  appointmentFee?: Prisma.FloatFilter<"Moderator"> | number
   qualification?: Prisma.StringFilter<"Moderator"> | string
-  currentWorkingPlace?: Prisma.StringFilter<"Moderator"> | string
-  designation?: Prisma.StringFilter<"Moderator"> | string
-  averageRating?: Prisma.FloatFilter<"Moderator"> | number
   createdAt?: Prisma.DateTimeFilter<"Moderator"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Moderator"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   events?: Prisma.EventListRelationFilter
-}, "id" | "email" | "registrationNumber" | "userId">
+}, "id" | "email" | "userId">
 
 export type ModeratorOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -400,14 +342,9 @@ export type ModeratorOrderByWithAggregationInput = {
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  registrationNumber?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  appointmentFee?: Prisma.SortOrder
   qualification?: Prisma.SortOrder
-  currentWorkingPlace?: Prisma.SortOrder
-  designation?: Prisma.SortOrder
-  averageRating?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -430,14 +367,9 @@ export type ModeratorScalarWhereWithAggregatesInput = {
   address?: Prisma.StringNullableWithAggregatesFilter<"Moderator"> | string | null
   isDeleted?: Prisma.BoolWithAggregatesFilter<"Moderator"> | boolean
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Moderator"> | Date | string | null
-  registrationNumber?: Prisma.StringWithAggregatesFilter<"Moderator"> | string
   experience?: Prisma.IntWithAggregatesFilter<"Moderator"> | number
   gender?: Prisma.EnumGenderWithAggregatesFilter<"Moderator"> | $Enums.Gender
-  appointmentFee?: Prisma.FloatWithAggregatesFilter<"Moderator"> | number
   qualification?: Prisma.StringWithAggregatesFilter<"Moderator"> | string
-  currentWorkingPlace?: Prisma.StringWithAggregatesFilter<"Moderator"> | string
-  designation?: Prisma.StringWithAggregatesFilter<"Moderator"> | string
-  averageRating?: Prisma.FloatWithAggregatesFilter<"Moderator"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Moderator"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Moderator"> | Date | string
   userId?: Prisma.StringWithAggregatesFilter<"Moderator"> | string
@@ -452,14 +384,9 @@ export type ModeratorCreateInput = {
   address?: string | null
   isDeleted?: boolean
   deletedAt?: Date | string | null
-  registrationNumber: string
   experience?: number
   gender?: $Enums.Gender
-  appointmentFee: number
   qualification: string
-  currentWorkingPlace: string
-  designation: string
-  averageRating?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutModeratorInput
@@ -475,14 +402,9 @@ export type ModeratorUncheckedCreateInput = {
   address?: string | null
   isDeleted?: boolean
   deletedAt?: Date | string | null
-  registrationNumber: string
   experience?: number
   gender?: $Enums.Gender
-  appointmentFee: number
   qualification: string
-  currentWorkingPlace: string
-  designation: string
-  averageRating?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -498,14 +420,9 @@ export type ModeratorUpdateInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
-  currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
-  designation?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutModeratorNestedInput
@@ -521,14 +438,9 @@ export type ModeratorUncheckedUpdateInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
-  currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
-  designation?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -544,14 +456,9 @@ export type ModeratorCreateManyInput = {
   address?: string | null
   isDeleted?: boolean
   deletedAt?: Date | string | null
-  registrationNumber: string
   experience?: number
   gender?: $Enums.Gender
-  appointmentFee: number
   qualification: string
-  currentWorkingPlace: string
-  designation: string
-  averageRating?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -566,14 +473,9 @@ export type ModeratorUpdateManyMutationInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
-  currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
-  designation?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -587,14 +489,9 @@ export type ModeratorUncheckedUpdateManyInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
-  currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
-  designation?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -619,14 +516,9 @@ export type ModeratorCountOrderByAggregateInput = {
   address?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
-  registrationNumber?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  appointmentFee?: Prisma.SortOrder
   qualification?: Prisma.SortOrder
-  currentWorkingPlace?: Prisma.SortOrder
-  designation?: Prisma.SortOrder
-  averageRating?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -634,8 +526,6 @@ export type ModeratorCountOrderByAggregateInput = {
 
 export type ModeratorAvgOrderByAggregateInput = {
   experience?: Prisma.SortOrder
-  appointmentFee?: Prisma.SortOrder
-  averageRating?: Prisma.SortOrder
 }
 
 export type ModeratorMaxOrderByAggregateInput = {
@@ -647,14 +537,9 @@ export type ModeratorMaxOrderByAggregateInput = {
   address?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
-  registrationNumber?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  appointmentFee?: Prisma.SortOrder
   qualification?: Prisma.SortOrder
-  currentWorkingPlace?: Prisma.SortOrder
-  designation?: Prisma.SortOrder
-  averageRating?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -669,14 +554,9 @@ export type ModeratorMinOrderByAggregateInput = {
   address?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
-  registrationNumber?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   gender?: Prisma.SortOrder
-  appointmentFee?: Prisma.SortOrder
   qualification?: Prisma.SortOrder
-  currentWorkingPlace?: Prisma.SortOrder
-  designation?: Prisma.SortOrder
-  averageRating?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -684,8 +564,6 @@ export type ModeratorMinOrderByAggregateInput = {
 
 export type ModeratorSumOrderByAggregateInput = {
   experience?: Prisma.SortOrder
-  appointmentFee?: Prisma.SortOrder
-  averageRating?: Prisma.SortOrder
 }
 
 export type ModeratorCreateNestedOneWithoutUserInput = {
@@ -755,14 +633,9 @@ export type ModeratorCreateWithoutUserInput = {
   address?: string | null
   isDeleted?: boolean
   deletedAt?: Date | string | null
-  registrationNumber: string
   experience?: number
   gender?: $Enums.Gender
-  appointmentFee: number
   qualification: string
-  currentWorkingPlace: string
-  designation: string
-  averageRating?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventCreateNestedManyWithoutModeratorInput
@@ -777,14 +650,9 @@ export type ModeratorUncheckedCreateWithoutUserInput = {
   address?: string | null
   isDeleted?: boolean
   deletedAt?: Date | string | null
-  registrationNumber: string
   experience?: number
   gender?: $Enums.Gender
-  appointmentFee: number
   qualification: string
-  currentWorkingPlace: string
-  designation: string
-  averageRating?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.EventUncheckedCreateNestedManyWithoutModeratorInput
@@ -815,14 +683,9 @@ export type ModeratorUpdateWithoutUserInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
-  currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
-  designation?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUpdateManyWithoutModeratorNestedInput
@@ -837,14 +700,9 @@ export type ModeratorUncheckedUpdateWithoutUserInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
-  currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
-  designation?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.EventUncheckedUpdateManyWithoutModeratorNestedInput
@@ -859,14 +717,9 @@ export type ModeratorCreateWithoutEventsInput = {
   address?: string | null
   isDeleted?: boolean
   deletedAt?: Date | string | null
-  registrationNumber: string
   experience?: number
   gender?: $Enums.Gender
-  appointmentFee: number
   qualification: string
-  currentWorkingPlace: string
-  designation: string
-  averageRating?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutModeratorInput
@@ -881,14 +734,9 @@ export type ModeratorUncheckedCreateWithoutEventsInput = {
   address?: string | null
   isDeleted?: boolean
   deletedAt?: Date | string | null
-  registrationNumber: string
   experience?: number
   gender?: $Enums.Gender
-  appointmentFee: number
   qualification: string
-  currentWorkingPlace: string
-  designation: string
-  averageRating?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   userId: string
@@ -919,14 +767,9 @@ export type ModeratorUpdateWithoutEventsInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
-  currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
-  designation?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutModeratorNestedInput
@@ -941,14 +784,9 @@ export type ModeratorUncheckedUpdateWithoutEventsInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  registrationNumber?: Prisma.StringFieldUpdateOperationsInput | string
   experience?: Prisma.IntFieldUpdateOperationsInput | number
   gender?: Prisma.EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-  appointmentFee?: Prisma.FloatFieldUpdateOperationsInput | number
   qualification?: Prisma.StringFieldUpdateOperationsInput | string
-  currentWorkingPlace?: Prisma.StringFieldUpdateOperationsInput | string
-  designation?: Prisma.StringFieldUpdateOperationsInput | string
-  averageRating?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -994,14 +832,9 @@ export type ModeratorSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   address?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
-  registrationNumber?: boolean
   experience?: boolean
   gender?: boolean
-  appointmentFee?: boolean
   qualification?: boolean
-  currentWorkingPlace?: boolean
-  designation?: boolean
-  averageRating?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
@@ -1019,14 +852,9 @@ export type ModeratorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   address?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
-  registrationNumber?: boolean
   experience?: boolean
   gender?: boolean
-  appointmentFee?: boolean
   qualification?: boolean
-  currentWorkingPlace?: boolean
-  designation?: boolean
-  averageRating?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
@@ -1042,14 +870,9 @@ export type ModeratorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   address?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
-  registrationNumber?: boolean
   experience?: boolean
   gender?: boolean
-  appointmentFee?: boolean
   qualification?: boolean
-  currentWorkingPlace?: boolean
-  designation?: boolean
-  averageRating?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
@@ -1065,20 +888,15 @@ export type ModeratorSelectScalar = {
   address?: boolean
   isDeleted?: boolean
   deletedAt?: boolean
-  registrationNumber?: boolean
   experience?: boolean
   gender?: boolean
-  appointmentFee?: boolean
   qualification?: boolean
-  currentWorkingPlace?: boolean
-  designation?: boolean
-  averageRating?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   userId?: boolean
 }
 
-export type ModeratorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "profilePhoto" | "contactNumber" | "address" | "isDeleted" | "deletedAt" | "registrationNumber" | "experience" | "gender" | "appointmentFee" | "qualification" | "currentWorkingPlace" | "designation" | "averageRating" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["moderator"]>
+export type ModeratorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "profilePhoto" | "contactNumber" | "address" | "isDeleted" | "deletedAt" | "experience" | "gender" | "qualification" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["moderator"]>
 export type ModeratorInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   events?: boolean | Prisma.Moderator$eventsArgs<ExtArgs>
@@ -1106,14 +924,9 @@ export type $ModeratorPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     address: string | null
     isDeleted: boolean
     deletedAt: Date | null
-    registrationNumber: string
     experience: number
     gender: $Enums.Gender
-    appointmentFee: number
     qualification: string
-    currentWorkingPlace: string
-    designation: string
-    averageRating: number
     createdAt: Date
     updatedAt: Date
     userId: string
@@ -1550,14 +1363,9 @@ export interface ModeratorFieldRefs {
   readonly address: Prisma.FieldRef<"Moderator", 'String'>
   readonly isDeleted: Prisma.FieldRef<"Moderator", 'Boolean'>
   readonly deletedAt: Prisma.FieldRef<"Moderator", 'DateTime'>
-  readonly registrationNumber: Prisma.FieldRef<"Moderator", 'String'>
   readonly experience: Prisma.FieldRef<"Moderator", 'Int'>
   readonly gender: Prisma.FieldRef<"Moderator", 'Gender'>
-  readonly appointmentFee: Prisma.FieldRef<"Moderator", 'Float'>
   readonly qualification: Prisma.FieldRef<"Moderator", 'String'>
-  readonly currentWorkingPlace: Prisma.FieldRef<"Moderator", 'String'>
-  readonly designation: Prisma.FieldRef<"Moderator", 'String'>
-  readonly averageRating: Prisma.FieldRef<"Moderator", 'Float'>
   readonly createdAt: Prisma.FieldRef<"Moderator", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Moderator", 'DateTime'>
   readonly userId: Prisma.FieldRef<"Moderator", 'String'>
