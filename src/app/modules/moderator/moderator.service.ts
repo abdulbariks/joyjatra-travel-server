@@ -6,6 +6,8 @@ import AppError from "../../errorHelpers/AppError";
 import { ICreateModeratorInput } from "./moderator.interface";
 
 const createModerator = async (payload: ICreateModeratorInput) => {
+  console.log(payload);
+
   const userExists = await prisma.user.findUnique({
     where: {
       email: payload.moderator.email,

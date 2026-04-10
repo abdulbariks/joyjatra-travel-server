@@ -10,7 +10,7 @@ const router = Router();
 router.post(
   "/create-moderator",
   validateRequest(createModeratorZodSchema),
-  checkAuth(Role.ADMIN),
+  checkAuth(Role.SUPER_ADMIN),
   ModeratorController.createModerator,
 );
 

@@ -231,6 +231,7 @@ export type BlogWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
   moderatorId?: Prisma.StringFilter<"Blog"> | string
   reviews?: Prisma.ReviewListRelationFilter
+  moderator?: Prisma.XOR<Prisma.ModeratorScalarRelationFilter, Prisma.ModeratorWhereInput>
 }
 
 export type BlogOrderByWithRelationInput = {
@@ -246,6 +247,7 @@ export type BlogOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   moderatorId?: Prisma.SortOrder
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
+  moderator?: Prisma.ModeratorOrderByWithRelationInput
 }
 
 export type BlogWhereUniqueInput = Prisma.AtLeast<{
@@ -264,6 +266,7 @@ export type BlogWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
   moderatorId?: Prisma.StringFilter<"Blog"> | string
   reviews?: Prisma.ReviewListRelationFilter
+  moderator?: Prisma.XOR<Prisma.ModeratorScalarRelationFilter, Prisma.ModeratorWhereInput>
 }, "id">
 
 export type BlogOrderByWithAggregationInput = {
@@ -311,8 +314,8 @@ export type BlogCreateInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  moderatorId: string
   reviews?: Prisma.ReviewCreateNestedManyWithoutBlogInput
+  moderator: Prisma.ModeratorCreateNestedOneWithoutBlogInput
 }
 
 export type BlogUncheckedCreateInput = {
@@ -341,8 +344,8 @@ export type BlogUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  moderatorId?: Prisma.StringFieldUpdateOperationsInput | string
   reviews?: Prisma.ReviewUpdateManyWithoutBlogNestedInput
+  moderator?: Prisma.ModeratorUpdateOneRequiredWithoutBlogNestedInput
 }
 
 export type BlogUncheckedUpdateInput = {
@@ -385,7 +388,6 @@ export type BlogUpdateManyMutationInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  moderatorId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type BlogUncheckedUpdateManyInput = {
@@ -444,9 +446,61 @@ export type BlogMinOrderByAggregateInput = {
   moderatorId?: Prisma.SortOrder
 }
 
+export type BlogListRelationFilter = {
+  every?: Prisma.BlogWhereInput
+  some?: Prisma.BlogWhereInput
+  none?: Prisma.BlogWhereInput
+}
+
+export type BlogOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type BlogNullableScalarRelationFilter = {
   is?: Prisma.BlogWhereInput | null
   isNot?: Prisma.BlogWhereInput | null
+}
+
+export type BlogCreateNestedManyWithoutModeratorInput = {
+  create?: Prisma.XOR<Prisma.BlogCreateWithoutModeratorInput, Prisma.BlogUncheckedCreateWithoutModeratorInput> | Prisma.BlogCreateWithoutModeratorInput[] | Prisma.BlogUncheckedCreateWithoutModeratorInput[]
+  connectOrCreate?: Prisma.BlogCreateOrConnectWithoutModeratorInput | Prisma.BlogCreateOrConnectWithoutModeratorInput[]
+  createMany?: Prisma.BlogCreateManyModeratorInputEnvelope
+  connect?: Prisma.BlogWhereUniqueInput | Prisma.BlogWhereUniqueInput[]
+}
+
+export type BlogUncheckedCreateNestedManyWithoutModeratorInput = {
+  create?: Prisma.XOR<Prisma.BlogCreateWithoutModeratorInput, Prisma.BlogUncheckedCreateWithoutModeratorInput> | Prisma.BlogCreateWithoutModeratorInput[] | Prisma.BlogUncheckedCreateWithoutModeratorInput[]
+  connectOrCreate?: Prisma.BlogCreateOrConnectWithoutModeratorInput | Prisma.BlogCreateOrConnectWithoutModeratorInput[]
+  createMany?: Prisma.BlogCreateManyModeratorInputEnvelope
+  connect?: Prisma.BlogWhereUniqueInput | Prisma.BlogWhereUniqueInput[]
+}
+
+export type BlogUpdateManyWithoutModeratorNestedInput = {
+  create?: Prisma.XOR<Prisma.BlogCreateWithoutModeratorInput, Prisma.BlogUncheckedCreateWithoutModeratorInput> | Prisma.BlogCreateWithoutModeratorInput[] | Prisma.BlogUncheckedCreateWithoutModeratorInput[]
+  connectOrCreate?: Prisma.BlogCreateOrConnectWithoutModeratorInput | Prisma.BlogCreateOrConnectWithoutModeratorInput[]
+  upsert?: Prisma.BlogUpsertWithWhereUniqueWithoutModeratorInput | Prisma.BlogUpsertWithWhereUniqueWithoutModeratorInput[]
+  createMany?: Prisma.BlogCreateManyModeratorInputEnvelope
+  set?: Prisma.BlogWhereUniqueInput | Prisma.BlogWhereUniqueInput[]
+  disconnect?: Prisma.BlogWhereUniqueInput | Prisma.BlogWhereUniqueInput[]
+  delete?: Prisma.BlogWhereUniqueInput | Prisma.BlogWhereUniqueInput[]
+  connect?: Prisma.BlogWhereUniqueInput | Prisma.BlogWhereUniqueInput[]
+  update?: Prisma.BlogUpdateWithWhereUniqueWithoutModeratorInput | Prisma.BlogUpdateWithWhereUniqueWithoutModeratorInput[]
+  updateMany?: Prisma.BlogUpdateManyWithWhereWithoutModeratorInput | Prisma.BlogUpdateManyWithWhereWithoutModeratorInput[]
+  deleteMany?: Prisma.BlogScalarWhereInput | Prisma.BlogScalarWhereInput[]
+}
+
+export type BlogUncheckedUpdateManyWithoutModeratorNestedInput = {
+  create?: Prisma.XOR<Prisma.BlogCreateWithoutModeratorInput, Prisma.BlogUncheckedCreateWithoutModeratorInput> | Prisma.BlogCreateWithoutModeratorInput[] | Prisma.BlogUncheckedCreateWithoutModeratorInput[]
+  connectOrCreate?: Prisma.BlogCreateOrConnectWithoutModeratorInput | Prisma.BlogCreateOrConnectWithoutModeratorInput[]
+  upsert?: Prisma.BlogUpsertWithWhereUniqueWithoutModeratorInput | Prisma.BlogUpsertWithWhereUniqueWithoutModeratorInput[]
+  createMany?: Prisma.BlogCreateManyModeratorInputEnvelope
+  set?: Prisma.BlogWhereUniqueInput | Prisma.BlogWhereUniqueInput[]
+  disconnect?: Prisma.BlogWhereUniqueInput | Prisma.BlogWhereUniqueInput[]
+  delete?: Prisma.BlogWhereUniqueInput | Prisma.BlogWhereUniqueInput[]
+  connect?: Prisma.BlogWhereUniqueInput | Prisma.BlogWhereUniqueInput[]
+  update?: Prisma.BlogUpdateWithWhereUniqueWithoutModeratorInput | Prisma.BlogUpdateWithWhereUniqueWithoutModeratorInput[]
+  updateMany?: Prisma.BlogUpdateManyWithWhereWithoutModeratorInput | Prisma.BlogUpdateManyWithWhereWithoutModeratorInput[]
+  deleteMany?: Prisma.BlogScalarWhereInput | Prisma.BlogScalarWhereInput[]
 }
 
 export type BlogCreateNestedOneWithoutReviewsInput = {
@@ -465,6 +519,77 @@ export type BlogUpdateOneWithoutReviewsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BlogUpdateToOneWithWhereWithoutReviewsInput, Prisma.BlogUpdateWithoutReviewsInput>, Prisma.BlogUncheckedUpdateWithoutReviewsInput>
 }
 
+export type BlogCreateWithoutModeratorInput = {
+  id?: string
+  title: string
+  location: string
+  description?: string | null
+  imageUrl?: string | null
+  content?: string | null
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reviews?: Prisma.ReviewCreateNestedManyWithoutBlogInput
+}
+
+export type BlogUncheckedCreateWithoutModeratorInput = {
+  id?: string
+  title: string
+  location: string
+  description?: string | null
+  imageUrl?: string | null
+  content?: string | null
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutBlogInput
+}
+
+export type BlogCreateOrConnectWithoutModeratorInput = {
+  where: Prisma.BlogWhereUniqueInput
+  create: Prisma.XOR<Prisma.BlogCreateWithoutModeratorInput, Prisma.BlogUncheckedCreateWithoutModeratorInput>
+}
+
+export type BlogCreateManyModeratorInputEnvelope = {
+  data: Prisma.BlogCreateManyModeratorInput | Prisma.BlogCreateManyModeratorInput[]
+  skipDuplicates?: boolean
+}
+
+export type BlogUpsertWithWhereUniqueWithoutModeratorInput = {
+  where: Prisma.BlogWhereUniqueInput
+  update: Prisma.XOR<Prisma.BlogUpdateWithoutModeratorInput, Prisma.BlogUncheckedUpdateWithoutModeratorInput>
+  create: Prisma.XOR<Prisma.BlogCreateWithoutModeratorInput, Prisma.BlogUncheckedCreateWithoutModeratorInput>
+}
+
+export type BlogUpdateWithWhereUniqueWithoutModeratorInput = {
+  where: Prisma.BlogWhereUniqueInput
+  data: Prisma.XOR<Prisma.BlogUpdateWithoutModeratorInput, Prisma.BlogUncheckedUpdateWithoutModeratorInput>
+}
+
+export type BlogUpdateManyWithWhereWithoutModeratorInput = {
+  where: Prisma.BlogScalarWhereInput
+  data: Prisma.XOR<Prisma.BlogUpdateManyMutationInput, Prisma.BlogUncheckedUpdateManyWithoutModeratorInput>
+}
+
+export type BlogScalarWhereInput = {
+  AND?: Prisma.BlogScalarWhereInput | Prisma.BlogScalarWhereInput[]
+  OR?: Prisma.BlogScalarWhereInput[]
+  NOT?: Prisma.BlogScalarWhereInput | Prisma.BlogScalarWhereInput[]
+  id?: Prisma.StringFilter<"Blog"> | string
+  title?: Prisma.StringFilter<"Blog"> | string
+  location?: Prisma.StringFilter<"Blog"> | string
+  description?: Prisma.StringNullableFilter<"Blog"> | string | null
+  imageUrl?: Prisma.StringNullableFilter<"Blog"> | string | null
+  content?: Prisma.StringNullableFilter<"Blog"> | string | null
+  isDeleted?: Prisma.BoolFilter<"Blog"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"Blog"> | Date | string | null
+  createdAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Blog"> | Date | string
+  moderatorId?: Prisma.StringFilter<"Blog"> | string
+}
+
 export type BlogCreateWithoutReviewsInput = {
   id?: string
   title: string
@@ -476,7 +601,7 @@ export type BlogCreateWithoutReviewsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  moderatorId: string
+  moderator: Prisma.ModeratorCreateNestedOneWithoutBlogInput
 }
 
 export type BlogUncheckedCreateWithoutReviewsInput = {
@@ -520,7 +645,7 @@ export type BlogUpdateWithoutReviewsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  moderatorId?: Prisma.StringFieldUpdateOperationsInput | string
+  moderator?: Prisma.ModeratorUpdateOneRequiredWithoutBlogNestedInput
 }
 
 export type BlogUncheckedUpdateWithoutReviewsInput = {
@@ -535,6 +660,60 @@ export type BlogUncheckedUpdateWithoutReviewsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   moderatorId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type BlogCreateManyModeratorInput = {
+  id?: string
+  title: string
+  location: string
+  description?: string | null
+  imageUrl?: string | null
+  content?: string | null
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type BlogUpdateWithoutModeratorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.ReviewUpdateManyWithoutBlogNestedInput
+}
+
+export type BlogUncheckedUpdateWithoutModeratorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutBlogNestedInput
+}
+
+export type BlogUncheckedUpdateManyWithoutModeratorInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  content?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -581,6 +760,7 @@ export type BlogSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   moderatorId?: boolean
   reviews?: boolean | Prisma.Blog$reviewsArgs<ExtArgs>
+  moderator?: boolean | Prisma.ModeratorDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.BlogCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["blog"]>
 
@@ -596,6 +776,7 @@ export type BlogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   moderatorId?: boolean
+  moderator?: boolean | Prisma.ModeratorDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["blog"]>
 
 export type BlogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -610,6 +791,7 @@ export type BlogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   moderatorId?: boolean
+  moderator?: boolean | Prisma.ModeratorDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["blog"]>
 
 export type BlogSelectScalar = {
@@ -629,15 +811,21 @@ export type BlogSelectScalar = {
 export type BlogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "location" | "description" | "imageUrl" | "content" | "isDeleted" | "deletedAt" | "createdAt" | "updatedAt" | "moderatorId", ExtArgs["result"]["blog"]>
 export type BlogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reviews?: boolean | Prisma.Blog$reviewsArgs<ExtArgs>
+  moderator?: boolean | Prisma.ModeratorDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.BlogCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type BlogIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type BlogIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type BlogIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  moderator?: boolean | Prisma.ModeratorDefaultArgs<ExtArgs>
+}
+export type BlogIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  moderator?: boolean | Prisma.ModeratorDefaultArgs<ExtArgs>
+}
 
 export type $BlogPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Blog"
   objects: {
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
+    moderator: Prisma.$ModeratorPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1046,6 +1234,7 @@ readonly fields: BlogFieldRefs;
 export interface Prisma__BlogClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   reviews<T extends Prisma.Blog$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Blog$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  moderator<T extends Prisma.ModeratorDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ModeratorDefaultArgs<ExtArgs>>): Prisma.Prisma__ModeratorClient<runtime.Types.Result.GetResult<Prisma.$ModeratorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1335,6 +1524,10 @@ export type BlogCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    */
   data: Prisma.BlogCreateManyInput | Prisma.BlogCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BlogIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1405,6 +1598,10 @@ export type BlogUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many Blogs to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BlogIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

@@ -8,7 +8,7 @@ model Moderator {
     address       String?
     isDeleted     Boolean   @default(false)
     deletedAt     DateTime?
-    experience          Int    @default(0)
+    experience          Int?    @default(0)
     gender              Gender @default(MALE)
     qualification       String?
 

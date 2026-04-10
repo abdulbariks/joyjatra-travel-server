@@ -390,7 +390,7 @@ export type EventCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   reviews?: Prisma.ReviewCreateNestedManyWithoutEventInput
-  moderator: Prisma.ModeratorCreateNestedOneWithoutEventsInput
+  moderator: Prisma.ModeratorCreateNestedOneWithoutEventInput
 }
 
 export type EventUncheckedCreateInput = {
@@ -426,7 +426,7 @@ export type EventUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUpdateManyWithoutEventNestedInput
-  moderator?: Prisma.ModeratorUpdateOneRequiredWithoutEventsNestedInput
+  moderator?: Prisma.ModeratorUpdateOneRequiredWithoutEventNestedInput
 }
 
 export type EventUncheckedUpdateInput = {
@@ -731,7 +731,7 @@ export type EventCreateWithoutReviewsInput = {
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  moderator: Prisma.ModeratorCreateNestedOneWithoutEventsInput
+  moderator: Prisma.ModeratorCreateNestedOneWithoutEventInput
 }
 
 export type EventUncheckedCreateWithoutReviewsInput = {
@@ -781,7 +781,7 @@ export type EventUpdateWithoutReviewsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  moderator?: Prisma.ModeratorUpdateOneRequiredWithoutEventsNestedInput
+  moderator?: Prisma.ModeratorUpdateOneRequiredWithoutEventNestedInput
 }
 
 export type EventUncheckedUpdateWithoutReviewsInput = {
