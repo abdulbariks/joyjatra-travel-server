@@ -1,9 +1,11 @@
 import app from "./app";
+import { seedSuperAdmin } from "./app/utils/seed";
 import { prisma } from "./lib/prisma";
 
 const bootstrap = async () => {
   try {
     await prisma.$connect();
+    await seedSuperAdmin();
     app.listen(process.env.PORT, () => {
       console.log(`Server is running on http://localhost:${process.env.PORT}`);
     });
