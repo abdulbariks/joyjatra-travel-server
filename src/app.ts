@@ -5,7 +5,6 @@ import express, { Application, Request, Response } from "express";
 import path from "path";
 import qs from "qs";
 import { auth } from "./lib/auth";
-import userRouter from "./app/modules/user/user.router";
 import { IndexRoutes } from "./app/routes";
 
 const app: Application = express();
