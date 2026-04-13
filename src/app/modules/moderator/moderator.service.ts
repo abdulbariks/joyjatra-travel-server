@@ -10,7 +10,7 @@ const createModerator = async (payload: ICreateModeratorInput) => {
 
   const userExists = await prisma.user.findUnique({
     where: {
-      email: payload.moderator.email,
+      email: payload.email,
     },
   });
 
@@ -20,19 +20,20 @@ const createModerator = async (payload: ICreateModeratorInput) => {
   }
   const userData = await auth.api.signUpEmail({
     body: {
-      email: payload.moderator.email,
+      email: payload.email,
       password: payload.password,
       role: Role.MODERATOR,
-      name: payload.moderator.name,
+      name: payload.name,
       needPasswordChange: true,
     },
   });
   try {
+    const { password, ...moderatorFields } = payload;
     const result = await prisma.$transaction(async (tx) => {
       const moderatorData = await tx.moderator.create({
         data: {
           userId: userData.user.id,
-          ...payload.moderator,
+          ...moderatorFields,
         },
       });
 
@@ -86,6 +87,27 @@ const createModerator = async (payload: ICreateModeratorInput) => {
   }
 };
 
+const getModerators = async () => {
+  const moderators = await prisma.moderator.findMany({
+    select: {
+      id: true,
+      userId: true,
+      name: true,
+      email: true,
+      profilePhoto: true,
+      contactNumber: true,
+      address: true,
+      experience: true,
+      gender: true,
+      qualification: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+  return moderators;
+};
+
 export const ModeratorService = {
   createModerator,
+  getModerators,
 };

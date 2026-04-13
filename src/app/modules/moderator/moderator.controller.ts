@@ -19,6 +19,17 @@ const createModerator = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getModerators = catchAsync(async (req: Request, res: Response) => {
+  const result = await ModeratorService.getModerators();
+  sendResponse(res, {
+    httpStatusCode: httpStatus.OK,
+    success: true,
+    message: "Moderators retrieved successfully",
+    data: result,
+  });
+});
+
 export const ModeratorController = {
   createModerator,
+  getModerators,
 };
