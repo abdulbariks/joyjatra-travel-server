@@ -26,6 +26,18 @@ const createEvent = async (user : IRequestUser, payload: ICreateEventInput) => {
   return result;
 };
 
+const getAllEvents = async () => {
+  const events = await prisma.event.findMany({
+    include: {
+      moderator: true,
+      reviews:true,
+    },
+  });
+  return events;
+};
+
+
 export const EventService = {
   createEvent,
+  getAllEvents,
 };

@@ -26,6 +26,17 @@ const createBlog = async (user: IRequestUser, payload: ICreateBlogInput) => {
   return result;
 };
 
+const getAllBlogs = async () => {
+  const blogs = await prisma.blog.findMany({
+    include: {
+      moderator: true,
+    },
+  });
+  return blogs;
+};
+
+
 export const BlogService = {
   createBlog,
+  getAllBlogs
 };
