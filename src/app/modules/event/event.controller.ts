@@ -5,10 +5,14 @@ import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
 
 const CreateEvent = catchAsync(async (req: Request, res: Response) => {
-  const payload = req.body;
+  const payload = {
+    ...req.body,
+    price: parseFloat(req.body.price),
+    imageUrl: req.file ? req.file.path : undefined,
+  };
   const user = req.user;
-  console.log(payload);
-  console.log("user========", user);
+  // console.log("payload=========",payload);
+  // console.log("user========", user);
 
   const result = await EventService.createEvent(user, payload);
   sendResponse(res, {

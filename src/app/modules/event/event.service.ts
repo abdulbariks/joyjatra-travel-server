@@ -11,6 +11,8 @@ const createEvent = async (user : IRequestUser, payload: ICreateEventInput) => {
     where: { userId: user.userId } 
   });
 
+  console.log("moderator==============",moderator);
+  
   if (!moderator) {
     throw new Error("Only users with a Moderator profile can create events.");
   }
@@ -18,9 +20,7 @@ const createEvent = async (user : IRequestUser, payload: ICreateEventInput) => {
   const result = await prisma.event.create({
     data: {
       ...payload,
-      startDate: new Date(payload.startDate),
-      endDate: new Date(payload.endDate),
-      moderatorId: user.userId,
+      moderatorId: moderator?.id,
     },
   });
   return result;
