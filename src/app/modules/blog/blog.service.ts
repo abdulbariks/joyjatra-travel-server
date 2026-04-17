@@ -30,13 +30,19 @@ const getAllBlogs = async () => {
   const blogs = await prisma.blog.findMany({
     include: {
       moderator: true,
+      reviews: true,
     },
   });
   return blogs;
 };
-
-
+const deleteBlog = async (blogId: string) => {
+  const deletedBlog = await prisma.blog.delete({
+    where: { id: blogId },
+  });
+  return deletedBlog;
+};
 export const BlogService = {
   createBlog,
-  getAllBlogs
+  getAllBlogs,
+  deleteBlog,
 };
