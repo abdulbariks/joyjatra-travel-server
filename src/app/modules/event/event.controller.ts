@@ -38,6 +38,27 @@ const getAllEvents = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updateEvent = catchAsync(async (req: Request, res: Response) => {
+  const { eventId } = req.query;
+
+  if (!eventId || typeof eventId !== "string") {
+    return sendResponse(res, {
+      httpStatusCode: httpStatus.BAD_REQUEST,
+      success: false,
+      message: "Invalid or missing event ID",
+    });
+  }
+
+  const result = await EventService.updateEvent(eventId, req.user, req.body);
+
+  sendResponse(res, {
+    httpStatusCode: httpStatus.OK,
+    success: true,
+    message: "Event updated successfully",
+    data: result,
+  });
+});
+
 const deleteEvent = catchAsync(async (req: Request, res: Response) => {
   const { eventId } = req.query;
 
@@ -64,5 +85,6 @@ const deleteEvent = catchAsync(async (req: Request, res: Response) => {
 export const EventController = {
   CreateEvent,
   getAllEvents,
+  updateEvent,
   deleteEvent,
 };
