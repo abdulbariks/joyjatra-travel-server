@@ -13,6 +13,7 @@ router.post(
   EventController.CreateEvent,
 );
 router.get("/", EventController.getAllEvents);
+router.get("/:id",EventController.getEventById)
 router.patch("/",checkAuth(Role.MODERATOR), EventController.updateEvent);
 router.delete(
   "/",

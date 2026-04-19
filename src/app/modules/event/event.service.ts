@@ -1,5 +1,8 @@
+import { Event, Prisma } from "../../../generated/prisma/client";
 import { prisma } from "../../../lib/prisma";
+import { IQueryParams } from "../../interfaces/query.interface";
 import { IRequestUser } from "../../interfaces/requestUser.interface";
+import { QueryBuilder } from "../../utils/QueryBuilder";
 import { ICreateEventInput } from "./event.interface";
 
 const createEvent = async (user: IRequestUser, payload: ICreateEventInput) => {
@@ -22,18 +25,55 @@ const createEvent = async (user: IRequestUser, payload: ICreateEventInput) => {
   return result;
 };
 
-const getAllEvents = async () => {
-  const events = await prisma.event.findMany({
-    include: {
-      moderator: true,
-      reviews: true,
-    },
-  });
-  return events;
+const getAllEvents = async (query: IQueryParams) => {
+  // const events = await prisma.event.findMany({
+  //   include: {
+  //     moderator: true,
+  //     reviews: true,
+  //   },
+  // });
+  // return events;
+
+  const queryBuilder = new QueryBuilder<
+    Event,
+    Prisma.EventWhereInput,
+    Prisma.EventInclude
+  >(prisma.event, query);
+  const result = await queryBuilder
+    .search()
+    .filter()
+    .where({
+      isDeleted: false,
+    })
+    .paginate()
+    .sort()
+    .fields()
+    .execute();
+
+  console.log(result);
+  return result;
 };
 
+const getEventById = async (id: string) => {
+    const event = await prisma.event.findUnique({
+        where: {
+            id,
+            isDeleted: false,
+        },
+        include: {
+           moderator: true,
+            reviews: true
+        }
+    })
+    return event;
+}
 
-const updateEvent = async (eventId: string, user: IRequestUser, payload: Partial<ICreateEventInput>) => {
+
+const updateEvent = async (
+  eventId: string,
+  user: IRequestUser,
+  payload: Partial<ICreateEventInput>,
+) => {
   //  Find the event to check ownership
   const event = await prisma.event.findUnique({
     where: { id: eventId },
@@ -54,7 +94,9 @@ const updateEvent = async (eventId: string, user: IRequestUser, payload: Partial
 
   //  Ownership Check: Compare event.moderatorId with moderator.id
   if (event.moderatorId !== moderator.id) {
-    throw new Error("You are not allowed to update this event (Ownership required)");
+    throw new Error(
+      "You are not allowed to update this event (Ownership required)",
+    );
   }
 
   //  Perform the update
@@ -109,6 +151,7 @@ const deleteEvent = async (eventId: string, user: IRequestUser) => {
 export const EventService = {
   createEvent,
   getAllEvents,
+  getEventById,
   updateEvent,
   deleteEvent,
 };

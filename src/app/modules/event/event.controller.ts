@@ -3,6 +3,7 @@ import httpStatus from "http-status";
 import { EventService } from "./event.service";
 import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponse";
+import { IQueryParams } from "../../interfaces/query.interface";
 
 const CreateEvent = catchAsync(async (req: Request, res: Response) => {
   const payload = {
@@ -29,7 +30,9 @@ const CreateEvent = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllEvents = catchAsync(async (req: Request, res: Response) => {
-  const result = await EventService.getAllEvents();
+
+   const query = req.query;
+  const result = await EventService.getAllEvents(query as IQueryParams);
   sendResponse(res, {
     httpStatusCode: httpStatus.OK,
     success: true,
@@ -37,6 +40,21 @@ const getAllEvents = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
+const getEventById = catchAsync(
+    async (req: Request, res: Response) => {
+        const { id } = req.params;
+
+        const event = await EventService.getEventById(id as string);
+
+        sendResponse(res, {
+            httpStatusCode: httpStatus.OK,
+            success: true,
+            message: "Doctor fetched successfully",
+            data: event,
+        })
+    }
+)
 
 const updateEvent = catchAsync(async (req: Request, res: Response) => {
   const { eventId } = req.query;
@@ -85,6 +103,7 @@ const deleteEvent = catchAsync(async (req: Request, res: Response) => {
 export const EventController = {
   CreateEvent,
   getAllEvents,
+  getEventById,
   updateEvent,
   deleteEvent,
 };
