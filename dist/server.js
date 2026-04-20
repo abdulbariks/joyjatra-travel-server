@@ -2697,7 +2697,7 @@ var config = {
   "clientVersion": "7.4.2",
   "engineVersion": "94a226be1cf2967af2541cca5529f0f7ba866919",
   "activeProvider": "postgresql",
-  "inlineSchema": 'model Admin {\n  id            String    @id @default(uuid(7))\n  name          String\n  email         String    @unique\n  profilePhoto  String?\n  contactNumber String?\n  isDeleted     Boolean   @default(false)\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  deletedAt     DateTime?\n\n  userId String @unique\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@index([email])\n  @@index([isDeleted])\n  @@map("admins")\n}\n\nmodel User {\n  id                 String     @id\n  name               String\n  email              String\n  emailVerified      Boolean    @default(false)\n  role               Role       @default(TOURIST)\n  status             UserStatus @default(ACTIVE)\n  needPasswordChange Boolean    @default(false)\n  isDeleted          Boolean    @default(false)\n  deletedAt          DateTime?\n  image              String?\n  createdAt          DateTime   @default(now())\n  updatedAt          DateTime   @updatedAt\n  sessions           Session[]\n  accounts           Account[]\n  tourist            Tourist?\n  moderator          Moderator?\n  admin              Admin?\n\n  @@unique([email])\n  @@map("user")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n\nmodel Blog {\n  id String @id @default(uuid(7))\n\n  title       String\n  location    String\n  description String?\n  imageUrl    String?\n  content     String?   @db.Text\n  isDeleted   Boolean   @default(false)\n  deletedAt   DateTime?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  // relations\n  reviews Review[]\n\n  moderatorId String\n  moderator   Moderator @relation(fields: [moderatorId], references: [id], onDelete: Cascade, onUpdate: Cascade)\n\n  @@index([isDeleted], name: "idx_blog_isDeleted")\n  @@map("blog")\n}\n\nenum Role {\n  SUPER_ADMIN\n  ADMIN\n  MODERATOR\n  TOURIST\n}\n\nenum UserStatus {\n  ACTIVE\n  BLOCKED\n  DELETED\n}\n\nenum Gender {\n  MALE\n  FEMALE\n  OTHER\n}\n\nenum PaymentStatus {\n  PAID\n  UNPAID\n}\n\nmodel Event {\n  id String @id @default(uuid(7))\n\n  name        String\n  description String?\n  location    String\n  price       Float\n  imageUrl    String?\n  startDate   DateTime\n  endDate     DateTime\n  content     String?   @db.Text\n  isDeleted   Boolean   @default(false)\n  deletedAt   DateTime?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  // relations\n  reviews Review[]\n\n  moderatorId String\n  moderator   Moderator @relation(fields: [moderatorId], references: [id], onDelete: Cascade, onUpdate: Cascade)\n\n  @@index([isDeleted], name: "idx_event_isDeleted")\n  @@map("event")\n}\n\nmodel Moderator {\n  id String @id @default(uuid(7))\n\n  name          String\n  email         String    @unique\n  profilePhoto  String?\n  contactNumber String?\n  address       String?\n  isDeleted     Boolean   @default(false)\n  deletedAt     DateTime?\n  experience    Int?      @default(0)\n  gender        Gender    @default(MALE)\n  qualification String?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  //relations\n\n  userId String @unique\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)\n\n  blog  Blog[]\n  event Event[]\n\n  @@index([email], name: "idx_moderator_email")\n  @@index([isDeleted], name: "idx_moderator_isDeleted")\n  @@map("moderator")\n}\n\nmodel Review {\n  id String @id @default(uuid(7))\n\n  rating    Int\n  comment   String?\n  isDeleted Boolean   @default(false)\n  deletedAt DateTime?\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n\n  // The User who wrote the review\n  touristId String\n  tourist   Tourist @relation(fields: [touristId], references: [id], onDelete: Cascade)\n\n  // Optional: Link to Blog\n  blogId String?\n  blog   Blog?   @relation(fields: [blogId], references: [id], onDelete: Cascade)\n\n  // Optional: Link to Event\n  eventId String?\n  event   Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)\n\n  @@index([isDeleted], name: "idx_review_isDeleted")\n  @@index([touristId])\n  @@index([blogId])\n  @@index([eventId])\n  @@map("review")\n}\n\n// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../../src/generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nmodel Tourist {\n  id String @id @default(uuid(7))\n\n  name          String\n  email         String    @unique\n  profilePhoto  String?\n  contactNumber String?\n  address       String?\n  isDeleted     Boolean   @default(false)\n  deletedAt     DateTime?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n\n  //relations\n\n  userId  String   @unique\n  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)\n  //   appointments      Appointment[]\n  //   prescriptions     Prescription[]\n  //   medicalReports    MedicalReport[]\n  reviews Review[]\n  //   patientHealthData PatientHealthData?\n\n  @@index([email], name: "idx_tourist_email")\n  @@index([isDeleted], name: "idx_tourist_isDeleted")\n  @@map("tourist")\n}\n',
+  "inlineSchema": 'model Admin {\n  id            String    @id @default(uuid(7))\n  name          String\n  email         String    @unique\n  profilePhoto  String?\n  contactNumber String?\n  isDeleted     Boolean   @default(false)\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  deletedAt     DateTime?\n\n  userId String @unique\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@index([email])\n  @@index([isDeleted])\n  @@map("admins")\n}\n\nmodel User {\n  id                 String     @id\n  name               String\n  email              String\n  emailVerified      Boolean    @default(true)\n  role               Role       @default(TOURIST)\n  status             UserStatus @default(ACTIVE)\n  needPasswordChange Boolean    @default(false)\n  isDeleted          Boolean    @default(false)\n  deletedAt          DateTime?\n  image              String?\n  createdAt          DateTime   @default(now())\n  updatedAt          DateTime   @updatedAt\n  sessions           Session[]\n  accounts           Account[]\n  tourist            Tourist?\n  moderator          Moderator?\n  admin              Admin?\n\n  @@unique([email])\n  @@map("user")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n\nmodel Blog {\n  id String @id @default(uuid(7))\n\n  title       String\n  location    String\n  description String?\n  imageUrl    String?\n  content     String?   @db.Text\n  isDeleted   Boolean   @default(false)\n  deletedAt   DateTime?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  // relations\n  reviews Review[]\n\n  moderatorId String\n  moderator   Moderator @relation(fields: [moderatorId], references: [id], onDelete: Cascade, onUpdate: Cascade)\n\n  @@index([isDeleted], name: "idx_blog_isDeleted")\n  @@map("blog")\n}\n\nenum Role {\n  SUPER_ADMIN\n  ADMIN\n  MODERATOR\n  TOURIST\n}\n\nenum UserStatus {\n  ACTIVE\n  BLOCKED\n  DELETED\n}\n\nenum Gender {\n  MALE\n  FEMALE\n  OTHER\n}\n\nenum PaymentStatus {\n  PAID\n  UNPAID\n}\n\nmodel Event {\n  id String @id @default(uuid(7))\n\n  name        String\n  description String?\n  location    String\n  price       Float\n  imageUrl    String?\n  startDate   DateTime\n  endDate     DateTime\n  content     String?   @db.Text\n  isDeleted   Boolean   @default(false)\n  deletedAt   DateTime?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  // relations\n  reviews Review[]\n\n  moderatorId String\n  moderator   Moderator @relation(fields: [moderatorId], references: [id], onDelete: Cascade, onUpdate: Cascade)\n\n  @@index([isDeleted], name: "idx_event_isDeleted")\n  @@map("event")\n}\n\nmodel Moderator {\n  id String @id @default(uuid(7))\n\n  name          String\n  email         String    @unique\n  profilePhoto  String?\n  contactNumber String?\n  address       String?\n  isDeleted     Boolean   @default(false)\n  deletedAt     DateTime?\n  experience    Int?      @default(0)\n  gender        Gender    @default(MALE)\n  qualification String?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  //relations\n\n  userId String @unique\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)\n\n  blog  Blog[]\n  event Event[]\n\n  @@index([email], name: "idx_moderator_email")\n  @@index([isDeleted], name: "idx_moderator_isDeleted")\n  @@map("moderator")\n}\n\nmodel Review {\n  id String @id @default(uuid(7))\n\n  rating    Int\n  comment   String?\n  isDeleted Boolean   @default(false)\n  deletedAt DateTime?\n  createdAt DateTime  @default(now())\n  updatedAt DateTime  @updatedAt\n\n  // The User who wrote the review\n  touristId String\n  tourist   Tourist @relation(fields: [touristId], references: [id], onDelete: Cascade)\n\n  // Optional: Link to Blog\n  blogId String?\n  blog   Blog?   @relation(fields: [blogId], references: [id], onDelete: Cascade)\n\n  // Optional: Link to Event\n  eventId String?\n  event   Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)\n\n  @@index([isDeleted], name: "idx_review_isDeleted")\n  @@index([touristId])\n  @@index([blogId])\n  @@index([eventId])\n  @@map("review")\n}\n\n// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../../src/generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nmodel Tourist {\n  id String @id @default(uuid(7))\n\n  name          String\n  email         String    @unique\n  profilePhoto  String?\n  contactNumber String?\n  address       String?\n  isDeleted     Boolean   @default(false)\n  deletedAt     DateTime?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n\n  //relations\n\n  userId  String   @unique\n  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)\n  //   appointments      Appointment[]\n  //   prescriptions     Prescription[]\n  //   medicalReports    MedicalReport[]\n  reviews Review[]\n  //   patientHealthData PatientHealthData?\n\n  @@index([email], name: "idx_tourist_email")\n  @@index([isDeleted], name: "idx_tourist_isDeleted")\n  @@map("tourist")\n}\n',
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -3867,6 +3867,262 @@ import { Router as Router2 } from "express";
 // src/app/modules/event/event.controller.ts
 import httpStatus from "http-status";
 
+// src/app/utils/QueryBuilder.ts
+var QueryBuilder = class {
+  constructor(model, queryParams, config3 = {}) {
+    this.model = model;
+    this.queryParams = queryParams;
+    this.config = config3;
+    this.query = {
+      where: {},
+      include: {},
+      orderBy: {},
+      skip: 0,
+      take: 10
+    };
+    this.countQuery = {
+      where: {}
+    };
+  }
+  query;
+  countQuery;
+  page = 1;
+  limit = 10;
+  skip = 0;
+  sortBy = "createdAt";
+  sortOrder = "desc";
+  selectFields;
+  search() {
+    const { searchTerm } = this.queryParams;
+    const { searchableFields } = this.config;
+    if (searchTerm && searchableFields && searchableFields.length > 0) {
+      const searchConditions = searchableFields.map(
+        (field) => {
+          if (field.includes(".")) {
+            const parts = field.split(".");
+            if (parts.length === 2) {
+              const [relation, nestedField] = parts;
+              const stringFilter2 = {
+                contains: searchTerm,
+                mode: "insensitive"
+              };
+            } else if (parts.length === 3) {
+              const [relation, nestedRelation, nestedField] = parts;
+              const stringFilter2 = {
+                contains: searchTerm,
+                mode: "insensitive"
+              };
+            }
+          }
+          const stringFilter = {
+            contains: searchTerm,
+            mode: "insensitive"
+          };
+          return {
+            [field]: stringFilter
+          };
+        }
+      );
+      const whereConditions = this.query.where;
+      whereConditions.OR = searchConditions;
+      const countWhereConditions = this.countQuery.where;
+      countWhereConditions.OR = searchConditions;
+    }
+    return this;
+  }
+  // /doctors?searchTerm=john&page=1&sortBy=name&specialty=cardiology&appointmentFee[lt]=100 => {}
+  // { specialty: 'cardiology', appointmentFee: { lt: '100' } }
+  filter() {
+    const { filterableFields } = this.config;
+    const excludedField = ["searchTerm", "page", "limit", "sortBy", "sortOrder", "fields", "include"];
+    const filterParams = {};
+    Object.keys(this.queryParams).forEach((key) => {
+      if (!excludedField.includes(key)) {
+        filterParams[key] = this.queryParams[key];
+      }
+    });
+    const queryWhere = this.query.where;
+    const countQueryWhere = this.countQuery.where;
+    Object.keys(filterParams).forEach((key) => {
+      const value = filterParams[key];
+      if (value === void 0 || value === "") {
+        return;
+      }
+      const isAllowedField = !filterableFields || filterableFields.length === 0 || filterableFields.includes(key);
+      if (key.includes(".")) {
+        const parts = key.split(".");
+        if (filterableFields && !filterableFields.includes(key)) {
+          return;
+        }
+      }
+      if (!isAllowedField) {
+        return;
+      }
+      if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+        queryWhere[key] = this.parseRangeFilter(value);
+        countQueryWhere[key] = this.parseRangeFilter(value);
+        return;
+      }
+      queryWhere[key] = this.parseFilterValue(value);
+      countQueryWhere[key] = this.parseFilterValue(value);
+    });
+    return this;
+  }
+  paginate() {
+    const page = Number(this.queryParams.page) || 1;
+    const limit = Number(this.queryParams.limit) || 5;
+    this.page = page;
+    this.limit = limit;
+    this.skip = (page - 1) * limit;
+    this.query.skip = this.skip;
+    this.query.take = this.limit;
+    return this;
+  }
+  sort() {
+    const sortBy = this.queryParams.sortBy || "createdAt";
+    const sortOrder = this.queryParams.sortOrder === "asc" ? "asc" : "desc";
+    this.sortBy = sortBy;
+    this.sortOrder = sortOrder;
+    if (sortBy.includes(".")) {
+      const parts = sortBy.split(".");
+    } else {
+      this.query.orderBy = {
+        [sortBy]: sortOrder
+      };
+    }
+    return this;
+  }
+  fields() {
+    const fieldsParam = this.queryParams.fields;
+    if (fieldsParam && typeof fieldsParam === "string") {
+      const fieldsArray = fieldsParam?.split(",").map((field) => field.trim());
+      this.selectFields = {};
+      fieldsArray?.forEach((field) => {
+        if (this.selectFields) {
+          this.selectFields[field] = true;
+        }
+      });
+      this.query.select = this.selectFields;
+      delete this.query.include;
+    }
+    return this;
+  }
+  include(relation) {
+    if (this.selectFields) {
+      return this;
+    }
+    this.query.include = { ...this.query.include, ...relation };
+    return this;
+  }
+  dynamicInclude(includeConfig, defaultInclude) {
+    if (this.selectFields) {
+      return this;
+    }
+    const result = {};
+    defaultInclude?.forEach((field) => {
+      if (includeConfig[field]) {
+        result[field] = includeConfig[field];
+      }
+    });
+    const includeParam = this.queryParams.include;
+    if (includeParam && typeof includeParam === "string") {
+      const requestedRelations = includeParam.split(",").map((relation) => relation.trim());
+      requestedRelations.forEach((relation) => {
+        if (includeConfig[relation]) {
+          result[relation] = includeConfig[relation];
+        }
+      });
+    }
+    this.query.include = { ...this.query.include, ...result };
+    return this;
+  }
+  where(condition) {
+    this.query.where = this.deepMerge(this.query.where, condition);
+    this.countQuery.where = this.deepMerge(this.countQuery.where, condition);
+    return this;
+  }
+  async execute() {
+    const [total, data] = await Promise.all([
+      this.model.count(this.countQuery),
+      this.model.findMany(this.query)
+    ]);
+    const totalPages = Math.ceil(total / this.limit);
+    return {
+      data,
+      meta: {
+        page: this.page,
+        limit: this.limit,
+        total,
+        totalPages
+      }
+    };
+  }
+  async count() {
+    return await this.model.count(this.countQuery);
+  }
+  getQuery() {
+    return this.query;
+  }
+  deepMerge(target, source) {
+    const result = { ...target };
+    for (const key in source) {
+      if (source[key] && typeof source[key] === "object" && !Array.isArray(source[key])) {
+        if (result[key] && typeof result[key] === "object" && !Array.isArray(result[key])) {
+          result[key] = this.deepMerge(result[key], source[key]);
+        } else {
+          result[key] = source[key];
+        }
+      } else {
+        result[key] = source[key];
+      }
+    }
+    return result;
+  }
+  parseFilterValue(value) {
+    if (value === "true") {
+      return true;
+    }
+    if (value === "false") {
+      return false;
+    }
+    if (typeof value === "string" && !isNaN(Number(value)) && value != "") {
+      return Number(value);
+    }
+    if (Array.isArray(value)) {
+      return { in: value.map((item) => this.parseFilterValue(item)) };
+    }
+    return value;
+  }
+  parseRangeFilter(value) {
+    const rangeQuery = {};
+    Object.keys(value).forEach((operator) => {
+      const operatorValue = value[operator];
+      switch (operator) {
+        case "lt":
+        case "lte":
+        case "gt":
+        case "gte":
+        case "equals":
+        case "not":
+        case "contains":
+        case "startsWith":
+        case "endsWith":
+          break;
+        case "in":
+        case "notIn":
+          if (Array.isArray(operatorValue)) {
+            rangeQuery[operator] = operatorValue;
+          } else {
+          }
+          break;
+        default:
+          break;
+      }
+    });
+    return Object.keys(rangeQuery).length > 0 ? rangeQuery : value;
+  }
+};
+
 // src/app/modules/event/event.service.ts
 var createEvent = async (user, payload) => {
   const moderator = await prisma.moderator.findUnique({
@@ -3884,18 +4140,85 @@ var createEvent = async (user, payload) => {
   });
   return result;
 };
-var getAllEvents = async () => {
-  const events = await prisma.event.findMany({
+var getAllEvents = async (query) => {
+  const queryBuilder = new QueryBuilder(prisma.event, query);
+  const result = await queryBuilder.search().filter().where({
+    isDeleted: false
+  }).paginate().sort().fields().execute();
+  console.log(result);
+  return result;
+};
+var getEventById = async (id) => {
+  const event = await prisma.event.findUnique({
+    where: {
+      id,
+      isDeleted: false
+    },
     include: {
       moderator: true,
       reviews: true
     }
   });
-  return events;
+  return event;
+};
+var updateEvent = async (eventId, user, payload) => {
+  const event = await prisma.event.findUnique({
+    where: { id: eventId }
+  });
+  if (!event) {
+    throw new Error("Event not found");
+  }
+  const moderator = await prisma.moderator.findUnique({
+    where: { userId: user.userId }
+  });
+  if (!moderator) {
+    throw new Error("Moderator profile not found");
+  }
+  if (event.moderatorId !== moderator.id) {
+    throw new Error(
+      "You are not allowed to update this event (Ownership required)"
+    );
+  }
+  const result = await prisma.event.update({
+    where: { id: eventId },
+    data: payload
+  });
+  return result;
+};
+var deleteEvent = async (eventId, user) => {
+  const event = await prisma.event.findUnique({
+    where: { id: eventId }
+  });
+  if (!event) {
+    throw new Error("Event not found");
+  }
+  if (user.role === "ADMIN" || user.role === "SUPER_ADMIN") {
+    return await prisma.event.delete({
+      where: { id: eventId }
+    });
+  }
+  if (user.role === "MODERATOR") {
+    const moderator = await prisma.moderator.findUnique({
+      where: { userId: user.userId }
+    });
+    if (!moderator) {
+      throw new Error("Moderator profile not found");
+    }
+    if (event.moderatorId !== moderator.id) {
+      throw new Error("You are not allowed to delete this event");
+    }
+    return await prisma.event.delete({
+      where: { id: eventId }
+    });
+  }
+  throw new Error("Unauthorized");
 };
 var EventService = {
   createEvent,
-  getAllEvents
+  getAllEvents,
+  getEventById,
+  updateEvent,
+  deleteEvent
 };
 
 // src/app/modules/event/event.controller.ts
@@ -3903,6 +4226,8 @@ var CreateEvent = catchAsync(async (req, res) => {
   const payload = {
     ...req.body,
     price: parseFloat(req.body.price),
+    startDate: req.body.startDate ? new Date(req.body.startDate).toISOString() : null,
+    endDate: req.body.endDate ? new Date(req.body.endDate).toISOString() : null,
     imageUrl: req.file ? req.file.path : void 0
   };
   const user = req.user;
@@ -3915,7 +4240,8 @@ var CreateEvent = catchAsync(async (req, res) => {
   });
 });
 var getAllEvents2 = catchAsync(async (req, res) => {
-  const result = await EventService.getAllEvents();
+  const query = req.query;
+  const result = await EventService.getAllEvents(query);
   sendResponse(res, {
     httpStatusCode: httpStatus.OK,
     success: true,
@@ -3923,9 +4249,59 @@ var getAllEvents2 = catchAsync(async (req, res) => {
     data: result
   });
 });
+var getEventById2 = catchAsync(
+  async (req, res) => {
+    const { id } = req.params;
+    const event = await EventService.getEventById(id);
+    sendResponse(res, {
+      httpStatusCode: httpStatus.OK,
+      success: true,
+      message: "Doctor fetched successfully",
+      data: event
+    });
+  }
+);
+var updateEvent2 = catchAsync(async (req, res) => {
+  const { eventId } = req.query;
+  if (!eventId || typeof eventId !== "string") {
+    return sendResponse(res, {
+      httpStatusCode: httpStatus.BAD_REQUEST,
+      success: false,
+      message: "Invalid or missing event ID"
+    });
+  }
+  const result = await EventService.updateEvent(eventId, req.user, req.body);
+  sendResponse(res, {
+    httpStatusCode: httpStatus.OK,
+    success: true,
+    message: "Event updated successfully",
+    data: result
+  });
+});
+var deleteEvent2 = catchAsync(async (req, res) => {
+  const { eventId } = req.query;
+  if (!eventId || typeof eventId !== "string") {
+    return sendResponse(res, {
+      httpStatusCode: httpStatus.BAD_REQUEST,
+      success: false,
+      message: "Invalid event ID"
+    });
+  }
+  const user = req.user;
+  const result = await EventService.deleteEvent(eventId, user);
+  sendResponse(res, {
+    httpStatusCode: httpStatus.OK,
+    success: true,
+    message: "Event deleted successfully",
+    data: result
+  });
+});
 var EventController = {
   CreateEvent,
-  getAllEvents: getAllEvents2
+  getAllEvents: getAllEvents2,
+  getEventById: getEventById2,
+  updateEvent: updateEvent2,
+  deleteEvent: deleteEvent2
 };
 
 // src/app/config/multer.config.ts
@@ -3962,8 +4338,20 @@ var multerUpload = multer({ storage });
 
 // src/app/modules/event/event.route.ts
 var router2 = Router2();
-router2.post("/create", multerUpload.single("image"), checkAuth(Role.MODERATOR), EventController.CreateEvent);
+router2.post(
+  "/create",
+  multerUpload.single("image"),
+  checkAuth(Role.MODERATOR),
+  EventController.CreateEvent
+);
 router2.get("/", EventController.getAllEvents);
+router2.get("/:id", EventController.getEventById);
+router2.patch("/", checkAuth(Role.MODERATOR), EventController.updateEvent);
+router2.delete(
+  "/",
+  checkAuth(Role.MODERATOR, Role.ADMIN, Role.SUPER_ADMIN),
+  EventController.deleteEvent
+);
 var EventRoutes = router2;
 
 // src/app/modules/review/review.route.ts
@@ -17857,7 +18245,7 @@ var createModerator = async (payload) => {
       password: payload.password,
       role: Role.MODERATOR,
       name: payload.name,
-      needPasswordChange: true
+      needPasswordChange: false
     }
   });
   try {
@@ -18004,14 +18392,22 @@ var createBlog = async (user, payload) => {
 var getAllBlogs = async () => {
   const blogs = await prisma.blog.findMany({
     include: {
-      moderator: true
+      moderator: true,
+      reviews: true
     }
   });
   return blogs;
 };
+var deleteBlog = async (blogId) => {
+  const deletedBlog = await prisma.blog.delete({
+    where: { id: blogId }
+  });
+  return deletedBlog;
+};
 var BlogService = {
   createBlog,
-  getAllBlogs
+  getAllBlogs,
+  deleteBlog
 };
 
 // src/app/modules/blog/blog.controller.ts

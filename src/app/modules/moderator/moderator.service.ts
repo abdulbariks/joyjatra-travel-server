@@ -24,7 +24,7 @@ const createModerator = async (payload: ICreateModeratorInput) => {
       password: payload.password,
       role: Role.MODERATOR,
       name: payload.name,
-      needPasswordChange: true,
+      needPasswordChange: false,
     },
   });
   try {
