@@ -14,6 +14,10 @@ router.post(
   ModeratorController.createModerator,
 );
 
-router.get("/", checkAuth(Role.SUPER_ADMIN), ModeratorController.getModerators);
+router.get(
+  "/",
+  checkAuth(Role.SUPER_ADMIN, Role.ADMIN),
+  ModeratorController.getModerators,
+);
 
 export const ModeratorRoutes = router;
