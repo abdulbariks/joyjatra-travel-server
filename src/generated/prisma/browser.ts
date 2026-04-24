@@ -48,6 +48,11 @@ export type Verification = Prisma.VerificationModel
  */
 export type Blog = Prisma.BlogModel
 /**
+ * Model Booking
+ * 
+ */
+export type Booking = Prisma.BookingModel
+/**
  * Model Event
  * 
  */
@@ -57,6 +62,11 @@ export type Event = Prisma.EventModel
  * 
  */
 export type Moderator = Prisma.ModeratorModel
+/**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel
 /**
  * Model Review
  * 

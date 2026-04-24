@@ -30,8 +30,7 @@ const CreateEvent = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllEvents = catchAsync(async (req: Request, res: Response) => {
-
-   const query = req.query;
+  const query = req.query;
   const result = await EventService.getAllEvents(query as IQueryParams);
   sendResponse(res, {
     httpStatusCode: httpStatus.OK,
@@ -41,20 +40,17 @@ const getAllEvents = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getEventById = catchAsync(
-    async (req: Request, res: Response) => {
-        const { id } = req.params;
+const getEventById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
 
-        const event = await EventService.getEventById(id as string);
-
-        sendResponse(res, {
-            httpStatusCode: httpStatus.OK,
-            success: true,
-            message: "Doctor fetched successfully",
-            data: event,
-        })
-    }
-)
+  const event = await EventService.getEventById(id as string);
+  sendResponse(res, {
+    httpStatusCode: httpStatus.OK,
+    success: true,
+    message: "Doctor fetched successfully",
+    data: event,
+  });
+});
 
 const updateEvent = catchAsync(async (req: Request, res: Response) => {
   const { eventId } = req.query;

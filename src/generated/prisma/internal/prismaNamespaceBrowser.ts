@@ -57,8 +57,10 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Blog: 'Blog',
+  Booking: 'Booking',
   Event: 'Event',
   Moderator: 'Moderator',
+  Payment: 'Payment',
   Review: 'Review',
   Tourist: 'Tourist'
 } as const
@@ -175,6 +177,19 @@ export const BlogScalarFieldEnum = {
 export type BlogScalarFieldEnum = (typeof BlogScalarFieldEnum)[keyof typeof BlogScalarFieldEnum]
 
 
+export const BookingScalarFieldEnum = {
+  id: 'id',
+  paymentStatus: 'paymentStatus',
+  bookingCount: 'bookingCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  touristId: 'touristId',
+  eventId: 'eventId'
+} as const
+
+export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
 export const EventScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -182,6 +197,7 @@ export const EventScalarFieldEnum = {
   location: 'location',
   price: 'price',
   imageUrl: 'imageUrl',
+  availablePerson: 'availablePerson',
   startDate: 'startDate',
   endDate: 'endDate',
   content: 'content',
@@ -213,6 +229,23 @@ export const ModeratorScalarFieldEnum = {
 } as const
 
 export type ModeratorScalarFieldEnum = (typeof ModeratorScalarFieldEnum)[keyof typeof ModeratorScalarFieldEnum]
+
+
+export const PaymentScalarFieldEnum = {
+  id: 'id',
+  amount: 'amount',
+  status: 'status',
+  transactionId: 'transactionId',
+  stripeEventId: 'stripeEventId',
+  invoiceUrl: 'invoiceUrl',
+  paymentGatewayData: 'paymentGatewayData',
+  paymentDate: 'paymentDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  bookingId: 'bookingId'
+} as const
+
+export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
 
 
 export const ReviewScalarFieldEnum = {
@@ -256,6 +289,14 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -270,4 +311,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
